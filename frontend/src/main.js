@@ -4,9 +4,19 @@ import Vue from 'vue';
 import axios from 'axios';
 import App from './App';
 import router from './router';
+import naver from 'vue-naver-maps';
+import VueGeolocation from 'vue-geolocation-api';
+
 
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
+
+Vue.use(naver, {
+  clientID: 'n9dm36idtu',
+  useGovAPI: false, //OpenAPI 사용
+});
+
+Vue.use(VueGeolocation);
 
 /* eslint-disable no-new */
 new Vue({
@@ -15,3 +25,4 @@ new Vue({
   components: { App },
   template: '<App/>',
 });
+
