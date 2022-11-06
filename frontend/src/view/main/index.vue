@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { getServerData } from '@/api/home-api';
+import { getServerData } from '@/api/test-api';
 import MainMap from './components/MainMap';
 
 export default {
