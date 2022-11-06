@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button @click="setCurrentPosition">현위치</button>
     <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
       <naver-marker :lat="latitude" :lng="longitude" />
     </naver-maps>
