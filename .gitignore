@@ -4,4 +4,5 @@
 /backend/.DS_Store
 /backend/public/.DS_Store
 /frontend/.gitignore
-/.gitignore
+/backend/config/db.config.js
+
