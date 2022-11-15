@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <button @click="setCurrentPosition">현위치</button>
+  <div class="map_wrap">
     <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
       <naver-marker :lat="latitude" :lng="longitude" />
     </naver-maps>
+    <button class="test" @click="setCurrentPosition"></button>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
     const latitude = 37;
     const longitude = 127;
     return {
-      width: 300,
+      // width: 300,
       height: 300,
       map: null,
       latitude,
@@ -23,7 +23,7 @@ export default {
       mapOptions: {
         lat: latitude,
         lng: longitude,
-        zoom: 13,
+        zoom: 18,
         zoomControl: false,
         mapTypeControl: false,
       },
@@ -58,4 +58,32 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style>
+body {
+  margin: 0;
+}
+.map_wrap{
+  position: relative;
+}
+.test{
+  position:absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  background:  url('~@/assets/images/Myplace.png')no-repeat;
+  background-size: contain;
+}
+button {
+  padding: 0px;
+  border-width: 0px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  border-radius: 10px;
+  border-style: none;
+  cursor: pointer;
+  transition: .5s;
+}
+</style>
