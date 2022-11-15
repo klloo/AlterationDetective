@@ -1,38 +1,61 @@
 <template>
   <div>
     <h1>메인 페이지</h1>
-    <div>API 테스트</div>
-    <div>{{ data.name }}</div>
-    <div>{{ data.age }}</div>
-    <main-map></main-map>
+    <components :is="currentComponent" />
+    <div>
+      <ul>
+        <li v-for="(tab, index) in tabList" :key="index" style="cursor:pointer" @click="currentComponent = tab.component">
+          {{ tab.label }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-import { getServerData } from '@/api/test-api';
-import MainMap from './components/MainMap';
+import MainMapView from './components/MainMapView';
+import AlterationShopView from './components/AlterationShopView';
+import FavoriteView from './components/FavoriteView.vue';
+import MyPageView from './components/MyPageView.vue';
 
 export default {
   name: 'MainView',
   components: {
-    MainMap,
+    MainMapView,
+    AlterationShopView,
+    FavoriteView,
+    MyPageView,
   },
   data() {
     return {
-      data: {},
+      currentComponent: MainMapView,
+      tabList: [
+        {
+          name: 'mainMap',
+          label: '메인',
+          component: MainMapView,
+        },
+        {
+          name: 'alterationShop',
+          label: '수선집',
+          component: AlterationShopView,
+        },
+        {
+          name: 'favorite',
+          label: '좋아요',
+          component: FavoriteView,
+        },
+        {
+          name: 'myPage',
+          label: '마이페이지',
+          component: MyPageView,
+        },
+      ],
     };
   },
-  created() {
-    this.loadData();
-  },
-  methods: {
-    /**
-     * api 통신 테스트
-     */
-    loadData() {
-      getServerData().then((response) => {
-        this.data = response.data;
-      });
+  computed: {
+    loginUser() {
+      return this.$store.getters.userInfo;
     },
   },
 };
