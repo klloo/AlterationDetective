@@ -1,16 +1,22 @@
 <template>
-  <div>
-    <h1>비밀번호 찾기 화면</h1>
-    <button @click="close">닫기</button>
-  </div>
+  <custom-popup ref="popup">
+    <div slot="content">
+      <h1>비밀번호 찾기 화면</h1>
+    </div>
+  </custom-popup>
 </template>
 
 <script>
+import CustomPopup from '@/components/CustomPopup';
+
 export default {
-  name: 'FindPasswordView',
+  name: 'FindPasswordPopup',
+  components: {
+    CustomPopup,
+  },
   methods: {
-    close() {
-      this.$emit('close-popup');
+    openPopup() {
+      this.$refs.popup.open();
     },
   },
 };

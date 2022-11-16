@@ -4,7 +4,7 @@
     <button @click="open('LoginPopup')">로그인</button>
     <button @click="open('JoinPopup')">회원가입</button>
     <button @click="open('FindPasswordPopup')">비밀번호 찾기</button>
-    <component :is="currentComponent" :class="['popup-view', isOpen ? 'active' : '']" @close-popup="close" />
+    <component :is="currentComponent" :class="['popup-view', isOpen ? 'active' : '']" ref="popupComponent" />
   </div>
 </template>
 
@@ -30,24 +30,13 @@ export default {
   methods: {
     open(component) {
       this.currentComponent = component;
-      this.isOpen = true;
+      this.$nextTick(() => {
+        this.$refs.popupComponent.openPopup();
+      });
     },
-    close() {
-      this.isOpen = false;
-    },
+    close() {},
   },
 };
 </script>
 
-<style lang="css">
-.popup-view {
-  opacity: 0;
-  display: none;
-  visibility: hidden;
-}
-.active {
-  opacity: 1;
-  display: block;
-  visibility: visible;
-}
-</style>
+<style lang="css"></style>
