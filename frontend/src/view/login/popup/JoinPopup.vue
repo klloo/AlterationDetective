@@ -1,16 +1,22 @@
 <template>
-  <div>
-    <h1>회원가입 화면</h1>
-    <button @click="close">닫기</button>
-  </div>
+  <custom-popup ref="popup">
+    <div slot="content">
+      <h1>회원가입 화면</h1>
+    </div>
+  </custom-popup>
 </template>
 
 <script>
+import CustomPopup from '@/components/CustomPopup';
+
 export default {
-  name: 'JoinView',
+  name: 'JoinPopup',
+  components: {
+    CustomPopup,
+  },
   methods: {
-    close() {
-      this.$emit('close-popup');
+    openPopup() {
+      this.$refs.popup.open();
     },
   },
 };

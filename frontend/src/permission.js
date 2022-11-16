@@ -4,11 +4,13 @@ import router from './router';
 import store from './store';
 
 const PATH_LOGIN = '/login';
+const PATH_MAIN = '/';
+const pathList = [PATH_LOGIN, PATH_MAIN];
 const whiteList = [PATH_LOGIN]; // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   if (!isEmpty(store.getters.userInfo)) {
-    if (to.path === PATH_LOGIN) {
+    if (to.path === PATH_LOGIN || !pathList.includes(to.path)) {
       next({
         path: '/',
       });
@@ -22,10 +24,13 @@ router.beforeEach((to, from, next) => {
       const user = data.data.user;
       if(user) {
         store.dispatch('setUserInfo', user);
-        if(to.path === PATH_LOGIN) {
+        if (to.path === PATH_LOGIN || !pathList.includes(to.path)) {
+          next({
+            path: '/',
+          });
+        } else {
           next();
         }
-        next();
       } else {
          next({
           path: '/login',
