@@ -4,18 +4,24 @@
       <naver-marker :lat="latitude" :lng="longitude" />
     </naver-maps>
     <button class="test" @click="setCurrentPosition"></button>
+    <alteration-shop-list-swipe />
   </div>
 </template>
 
 <script>
+import AlterationShopListSwipe from './AlterationShopListSwipe';
+
 export default {
   name: 'MainMap',
+  components: {
+    AlterationShopListSwipe,
+  },
   data() {
     // 기본 위치
     const latitude = 37;
     const longitude = 127;
     return {
-      // width: 300,
+      width: null,
       height: 300,
       map: null,
       latitude,
@@ -23,9 +29,11 @@ export default {
       mapOptions: {
         lat: latitude,
         lng: longitude,
-        zoom: 18,
+        zoom: 13,
         zoomControl: false,
         mapTypeControl: false,
+        mapDataControl: false,
+        scaleControl: false,
       },
       initLayers: ['BACKGROUND', 'BACKGROUND_DETAIL', 'POI_KOREAN', 'TRANSIT', 'ENGLISH', 'CHINESE', 'JAPANESE'],
     };
@@ -62,16 +70,16 @@ export default {
 body {
   margin: 0;
 }
-.map_wrap{
+.map_wrap {
   position: relative;
 }
-.test{
-  position:absolute;
+.test {
+  position: absolute;
   bottom: 16px;
   right: 16px;
   width: 24px;
   height: 24px;
-  background:  url('~@/assets/images/Myplace.png')no-repeat;
+  background: url('~@/assets/images/Myplace.png') no-repeat;
   background-size: contain;
 }
 button {
@@ -84,6 +92,6 @@ button {
   border-radius: 10px;
   border-style: none;
   cursor: pointer;
-  transition: .5s;
+  transition: 0.5s;
 }
 </style>

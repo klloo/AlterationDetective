@@ -4,11 +4,14 @@ import Vue from 'vue';
 import axios from 'axios';
 import App from './App';
 import router from './router';
+import store from './store';
 import naver from 'vue-naver-maps';
 import VueGeolocation from 'vue-geolocation-api';
+import './permission';
 
 
 Vue.prototype.$http = axios;
+Vue.prototype.$store = store;
 Vue.config.productionTip = false;
 
 Vue.use(naver, {
@@ -22,6 +25,7 @@ Vue.use(VueGeolocation);
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>',
 });
