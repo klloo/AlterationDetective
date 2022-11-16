@@ -29,7 +29,7 @@ export default {
       mapOptions: {
         lat: latitude,
         lng: longitude,
-        zoom: 18,
+        zoom: 13,
         zoomControl: false,
         mapTypeControl: false,
         mapDataControl: false,
