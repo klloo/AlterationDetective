@@ -77,14 +77,14 @@
         이메일 인증을 해주세요.
       </p>
       <div class="input_box">
-        <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
+        <input type="text" class="mail" placeholder="name@email.com" v-model="formData.userEmail" />
       </div>
       <div class="input_box" v-if="numberSend === true">
         <input type="text" placeholder="인증번호 입력" />
       </div>
       <div class="tar">
         <!-- 인증번호 전송 클릭하면 인증번호 입력input, 재전송 버튼 나오고 인증번호 전송이 인증번호 확인 버튼으로 변경됨-->
-        <button class="button02 mr_8" @click="numberSend = true" v-if="numberSend === false">인증번호 전송</button>
+        <button class="button02 mr_8" @click="sendAuthMail" v-if="numberSend === false">인증번호 전송</button>
         <button class="button02 mr_8" v-if="numberSend === true" @click="joinPassword = true">인증번호 확인</button>
         <button class="button02" v-if="numberSend === true">재전송</button>
       </div>
@@ -92,13 +92,13 @@
     <!-- 인증번호 확인 누르면 비밀번호 입력input, 닉네임 정하는 input 나옴 -->
     <div v-if="joinPassword === true">
       <div class="input_box">
-        <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="userId" />
+        <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="formData.userEmail" />
       </div>
       <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 입력하세요" />
+        <input type="text" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
       </div>
       <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 한번 더 입력하세요" />
+        <input type="text" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
       </div>
       <div class="input_box mb_40" v-if="numberSend === true">
         <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." />
@@ -110,34 +110,38 @@
 </template>
 
 <script>
-import { login } from '@/api/user';
+import { sendAuthMail } from '@/api/user';
 
 export default {
   name: 'JoinPopup',
   emits: ['home'],
   data() {
     return {
-      userId: '',
-      password: '',
+      formData: {
+        userEmail: '',
+        username: '',
+        password: '',
+        passwordRe: '',
+      },
       joindetail: 'none',
       numberSend: false,
       joinPassword: false,
+      isAllChecked: false,
     };
   },
   methods: {
-    login() {
-      const loginInfo = {
-        userId: this.userId,
-        password: this.password,
-      };
-      login(loginInfo).then((data) => {
-        const userInfo = data.data;
-        this.$store.dispatch('setUserInfo', userInfo);
-        this.$router.push('/');
-      });
-    },
-    openPopup() {
-      this.$refs.popup.open();
+    /**
+     * 인증메일을 전송한다.
+     */
+    sendAuthMail() {
+      sendAuthMail(this.userId, this.password)
+        .then((res) => {
+          const authCode = res.data.data;
+          numberSend = true;
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     },
   },
 };

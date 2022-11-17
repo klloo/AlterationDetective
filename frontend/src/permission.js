@@ -36,6 +36,9 @@ router.beforeEach((to, from, next) => {
           path: '/login',
         });
       }
-    });
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });;
   }
 });
