@@ -1,19 +1,12 @@
 <template>
-  <custom-popup ref="popup">
-    <div slot="content">
-      <h1>비밀번호 찾기 화면</h1>
-    </div>
-  </custom-popup>
+  <div>
+    <h1>비밀번호 찾기 화면</h1>
+  </div>
 </template>
 
 <script>
-import CustomPopup from '@/components/CustomPopup';
-
 export default {
   name: 'FindPasswordPopup',
-  components: {
-    CustomPopup,
-  },
   methods: {
     openPopup() {
       this.$refs.popup.open();
