@@ -7,11 +7,9 @@
       <div class="d_flex flex_column px_1">
         <button @click="mode = 'login'" class="button01 login mb_16">로그인</button>
         <button @click="mode = 'join'" class="button01 join mb_16">회원가입</button>
-        <!-- <button @click="open('FindPasswordPopup')">비밀번호 찾기</button> -->
         <!-- figma디자인에 비밀번호 찾기 버튼은 로그인 클릭하고 난 뒤에 있음 -->
         <router-link to="../main/index.vue" class="link_text">로그인없이 둘러보기</router-link>
       </div>
-      <!-- <component :is="currentComponent" :class="['popup-view', isOpen ? 'active' : '']" ref="popupComponent" /> -->
     </div>
     <div v-if="mode === 'login'" class="px_1">
       <LoginPopup @home="mode = 'none'"></LoginPopup>
@@ -23,21 +21,14 @@
 </template>
 
 <script>
-import { login } from '@/api/user';
 import LoginPopup from './popup/LoginPopup';
 import JoinPopup from './popup/JoinPopup';
-import Common from '@/assets/css/common.css'
-import ResetCss from '@/assets/css/reset.css'
-// import FindPasswordPopup from './popup/FindPasswordPopup';
 
 export default {
   name: 'Login',
   components: {
     LoginPopup,
     JoinPopup,
-    Common,
-    ResetCss
-    // FindPasswordPopup,
   },
   data() {
     return {
@@ -46,15 +37,6 @@ export default {
       mode: 'none',
     };
   },
-  // methods: {
-  //   open(component) {
-  //     this.currentComponent = component;
-  //     this.$nextTick(() => {
-  //       this.$refs.popupComponent.openPopup();
-  //     });
-  //   },
-  //   close() {},
-  // },
 };
 </script>
 
@@ -71,12 +53,14 @@ export default {
   display: block;
 }
 .login {
-  background: #81ACFF;
+  background: #81acff;
   color: #ffffff;
 }
 .join {
-  background: #CCE3FF;
-  color: #81ACFF;
+  background: #cce3ff;
+  color: #81acff;
 }
-.button01 {font-size: 16px;}
+.button01 {
+  font-size: 16px;
+}
 </style>

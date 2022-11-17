@@ -8,6 +8,8 @@ import store from './store';
 import naver from 'vue-naver-maps';
 import VueGeolocation from 'vue-geolocation-api';
 import './permission';
+import '@/assets/css/reset.css'
+import '@/assets/css/common.css'
 
 
 Vue.prototype.$http = axios;
