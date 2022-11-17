@@ -1,6 +1,6 @@
 <template>
   <div :class="['popup-view', isOpen ? 'active' : '']">
-    <button @click="close">닫기</button>
+    <!-- <button @click="close">닫기</button> -->
     <slot name="content"></slot>
   </div>
 </template>
@@ -26,13 +26,13 @@ export default {
 
 <style>
 .popup-view {
-  opacity: 0;
+  /* opacity: 0;
   display: none;
-  visibility: hidden;
+  visibility: hidden; */
 }
 .active {
-  opacity: 1;
+  /* opacity: 1;
   display: block;
-  visibility: visible;
+  visibility: visible; */
 }
 </style>

@@ -1,27 +1,73 @@
 <template>
   <custom-popup ref="popup">
     <div slot="content">
-      <h1>로그인 화면</h1>
-      <div>ID <input type="text" v-model="userId" /></div>
-      <div>PW <input type="password" v-model="password" /></div>
-      <button @click="login">Login</button>
+      <div v-if="JoinPopup === false">
+        <!-- 뒤로가기 이미지 -->
+        <div class="mb_32">
+          <span class="BACKARR" @click="$emit('home')"></span>
+        </div>
+        <!-- 백그라운드 이미지 -->
+        <div class="mb_40">
+          <span class="LOGIN_IMG mx_0a"></span>
+        </div>
+        <!-- 로그인 input -->
+        <p class="title">Login</p>
+        <div class="input_box">
+          <div>
+            <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
+          </div>
+          <div>
+            <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
+          </div>
+        </div>
+        <!-- 자동로그인 -->
+        <div class="d_flex align_center mb_40">
+          <input type="checkbox" class="checkbox">
+          <p>자동로그인</p>
+        </div>
+        <!-- 로그인 버튼 -->
+        <div class="mb_24">
+          <button @click="login" class="button01 blue color_w">로그인</button>
+        </div>
+        <!-- 비번찾기 & 회원가입 -->
+        <div class="d_flex justify_between mb_24">
+          <p>비밀번호를 잊으셨나요?</p>
+          <router-link to="#" class="link_text">비밀번호 재설정</router-link>
+        </div>
+        <div class="d_flex justify_between">
+          <p>아직 수선탐정 회원이 아니신가요?</p>
+          <p class="link_text" @click="JoinPopup = true">회원가입</p>
+        </div>
+      </div>
+      <div v-if="JoinPopup === true">
+        <JoinPopup @home="JoinPopup = false"></JoinPopup>
+      </div>
     </div>
   </custom-popup>
 </template>
 
 <script>
+
+import JoinPopup from './JoinPopup.vue';
 import CustomPopup from '@/components/CustomPopup';
 import { login } from '@/api/user';
+import Common from '@/assets/css/common.css'
+import ResetCss from '@/assets/css/reset.css'
 
 export default {
   name: 'LoginView',
+  emits: ['home'],
   components: {
     CustomPopup,
+    Common,
+    ResetCss,
+    JoinPopup,
   },
   data() {
     return {
       userId: '',
       password: '',
+      JoinPopup: false,
     };
   },
   methods: {
@@ -43,4 +89,5 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+</style>
