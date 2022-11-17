@@ -13,3 +13,7 @@ export function login(params) {
 export function logout() {
     return axios.get(`${PREFIX_URL}/logout`);
 }
+
+export function sendAuthMail(params) {
+    return axios.post(`${PREFIX_URL}/send-auth-mail`, params);
+}

@@ -68,11 +68,15 @@ export default {
         userId: this.userId,
         password: this.password,
       };
-      login(loginInfo).then((data) => {
-        const userInfo = data.data;
-        this.$store.dispatch('setUserInfo', userInfo);
-        this.$router.push('/');
-      });
+      login(loginInfo)
+        .then((data) => {
+          const userInfo = data.data;
+          this.$store.dispatch('setUserInfo', userInfo);
+          this.$router.push('/');
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     },
     openPopup() {
       this.$refs.popup.open();
