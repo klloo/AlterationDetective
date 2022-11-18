@@ -3,7 +3,7 @@
     <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
       <naver-marker :lat="latitude" :lng="longitude" />
     </naver-maps>
-    <button class="test" @click="setCurrentPosition"></button>
+    <span class="MYPLACE" @click="setCurrentPosition"></span>
     <alteration-shop-list-swipe />
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
       mapOptions: {
         lat: latitude,
         lng: longitude,
-        zoom: 13,
+        zoom: 18,
         zoomControl: false,
         mapTypeControl: false,
         mapDataControl: false,
@@ -67,13 +67,15 @@ export default {
 };
 </script>
 <style>
-body {
-  margin: 0;
-}
+
 .map_wrap {
   position: relative;
+    top: 0;
+    left: 0;
+    width: 100vw;
 }
-.test {
+.MYPLACE {
+  z-index: 999;
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -81,6 +83,10 @@ body {
   height: 24px;
   background: url('~@/assets/images/Myplace.png') no-repeat;
   background-size: contain;
+  background-color: #FFFFFF;
+
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+border-radius: 4px;
 }
 button {
   padding: 0px;

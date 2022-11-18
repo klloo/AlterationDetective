@@ -1,3 +1,44 @@
+body {margin: 0;}
+#app{margin-top: 0!important;}
+.map_wrap{position: relative;}
+#vue-naver-maps{height: 80vh!important;}
+
+.TUNE{
+width: 24px;
+height: 24px;
+display: inline-block;
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+border-radius: 4px;
+}
+
+
+/* Utility start */
+.overflow_h {overflow: hidden;}
+.overflow_xa {overflow-x: auto;}
+.d_flex {display: flex!important;}
+.justify_start {justify-content: flex-start!important;}
+.justify_end {justify-content: flex-end!important;}
+.justify_between {justify-content: space-between!important;}
+.justify_center {justify-content: center!important;}
+.align_items_start {align-items: flex-start!important;}
+.align_items_center {align-items: center!important;}
+.align_items_end {align-items: flex-end!important;}
+.flex_column {flex-direction: column!important;}
+.flex1 {flex: 1;}
+.flex_grow {flex-grow:1;}
+
+
+
+/* icon */
+.TUNE{
+  background-color: #ffffff;
+background-image: url('~@/assets/images/Tune.png');
+background-size: cover;
+background-position: center;
+}
+
+
+
 /* 색상표 */
 /* :root {
 	--button-blue1:(#81ACFF);
@@ -47,6 +88,7 @@
 .pb_32 {margin-bottom: 32px;}
 /* top */
 .pa_0 {padding: 0;}
+.pa_1 {padding: 16px;}
 .pt_4 {margin-top: 4px;}
 .pt_8 {margin-top: 8px;}
 .pt_16 {margin-top: 16px;}
@@ -128,7 +170,7 @@
 	border: none;
 }
 button.blue {
-	background: #81ACFF;
+	background: #81ACFF!important;
 	color: #ffffff;
 }
 button.skyblue {
@@ -136,8 +178,41 @@ button.skyblue {
 	color: #81ACFF;
 }
 button {
-	 height: 40px;
+	 /* height: 40px; */
 	border-radius: 20px;
 	border: none;
 	padding: 10px 24px;
+}
+
+
+
+
+
+/* swiper custom start */
+
+.swiper-button-next:after {content: '';}
+.swiper-button-prev:after {content: '';}
+
+
+.swiper-pagination-bullet-active {background-color: #ca0000;}
+.swiper-button-next.swiper-button-disabled {opacity: 0;}
+.swiper-button-prev.swiper-button-disabled {opacity: 0;}
+
+/* swiper custom end */
+
+
+
+.tab_area {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  align-items: center;
+}
+.tab_area > li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25%;
+  height: 64px;
 }
