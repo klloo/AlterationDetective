@@ -56,9 +56,6 @@ input[type="checkbox"]:checked {
 input[type="checkbox"]:checked::before {
 	border-radius: 2px;	transform: scale(1) translate(-50%, -50%);
 }
-.button01.blue {
-	background: #81ACFF;
-}
 .all_checked:after,
 .single_checked:after {
 	content: '';

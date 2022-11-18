@@ -121,19 +121,23 @@
 	background-size: cover;
 }
 /* button */
-.button01 {
+.button_w100 {
 	width: 100%;
 	height: 56px;
 	border-radius: 28px;
 	border: none;
-	padding: 0;
 }
-.button02 {
-	height: 40px;
-	border-radius: 20px;
-	border: none;
-	padding: 0;
+button.blue {
 	background: #81ACFF;
 	color: #ffffff;
+}
+button.skyblue {
+	background: #CCE3FF;
+	color: #81ACFF;
+}
+button {
+	 height: 40px;
+	border-radius: 20px;
+	border: none;
 	padding: 10px 24px;
 }

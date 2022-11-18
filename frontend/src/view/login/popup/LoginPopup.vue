@@ -26,7 +26,7 @@
       </div>
       <!-- 로그인 버튼 -->
       <div class="mb_24">
-        <button @click="login" class="button01 blue color_w">로그인</button>
+        <button @click="login" class="button_w100 blue color_w">로그인</button>
       </div>
       <!-- 비번찾기 & 회원가입 -->
       <div class="d_flex justify_between mb_24">

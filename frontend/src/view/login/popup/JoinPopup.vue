@@ -64,7 +64,7 @@
         </div>
         <div>
           <p class="fs_14 mb_40">선택항목은 동의하지 않으셔도 서비스를 이용할 수 있어요.</p>
-          <button class="button01 blue color_w" @click="joindetail = 'join'">
+          <button class="button_w100 blue color_w" @click="joindetail = 'join'">
             다음
           </button>
         </div>
@@ -84,9 +84,9 @@
       </div>
       <div class="tar">
         <!-- 인증번호 전송 클릭하면 인증번호 입력input, 재전송 버튼 나오고 인증번호 전송이 인증번호 확인 버튼으로 변경됨-->
-        <button class="button02 mr_8" @click="sendAuthMail" v-if="numberSend === false">인증번호 전송</button>
-        <button class="button02 mr_8" v-if="numberSend === true" @click="joinPassword = true">인증번호 확인</button>
-        <button class="button02" v-if="numberSend === true">재전송</button>
+        <button class="blue mr_8" @click="sendAuthMail" v-if="numberSend === false">인증번호 전송</button>
+        <button class="blue mr_8" v-if="numberSend === true" @click="joinPassword = true">인증번호 확인</button>
+        <button class="blue" v-if="numberSend === true">재전송</button>
       </div>
     </div>
     <!-- 인증번호 확인 누르면 비밀번호 입력input, 닉네임 정하는 input 나옴 -->
@@ -104,7 +104,7 @@
         <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." />
       </div>
       <!-- 회원가입 되면 main으로 이동해야함 -->
-      <button class="button01 blue color_w">회원가입</button>
+      <button class="button_w100 blue color_w">회원가입</button>
     </div>
   </div>
 </template>
