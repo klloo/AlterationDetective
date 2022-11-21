@@ -1,0 +1,211 @@
+.modal_m,
+.overlay_m {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 998;
+    width: 100%;
+    height: 100%;
+}
+.tal .modal_card_m {text-align: left;}
+.overlay_m {background-color: rgba(0, 0, 0, 0.5);}
+.modal_card_m {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 50px 16px;
+    color: #333;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 20px 20px 0 0;
+    border: 1px solid #ddd;
+    z-index: 999;
+    transition: all 0.1s ease 0s;
+}
+.modal_card_m .modal_height100{
+    height: 100vh;
+}
+.slide-up {
+    animation-duration: 0.4s;
+    animation-name: up;
+    animation-direction: normal;
+    animation-timing-function: linear;
+}
+.slide-down {
+    animation-duration: 0.4s;
+    animation-name: down;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+}
+@keyframes up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+@keyframes down {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+    }
+}
+
+.modal_header  {margin-bottom: 15px;}
+.modal_m .modal_close {
+    width: 15px;
+    height: 15px;
+}
+.modal_scrollable {
+    overflow-y: auto;
+}
+.modal_title_m {
+    position: absolute;
+    top: 20px;
+    padding-right: 40px;
+    margin-bottom: 20px;
+    font-size: 1.250em;
+    font-weight: normal;
+}
+.modal_m.merchant .card {
+    width: 100%;
+    min-height: 112px;
+    padding: 1em;
+    border: 1px solid #ccc;
+    transition: .3s;
+}
+.modal_m.merchant .merchant_list p.shop_name {
+    margin-bottom: 0;
+    width: 200px;
+    color: #292929;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    white-space: nowrap;
+    text-align: right;
+}
+.modal_m.merchant .merchant_list p.shop_id {
+    margin-bottom: 0;
+    width: 200px;
+    color: #292929;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    white-space: nowrap;
+    text-align: right;
+}
+.modal_m.merchant .merchant_list p.date {
+    padding-bottom: 0;
+    color: #292929;
+    font-size: 16px;
+    line-height: 24px;
+    border-bottom: none;
+}
+.modal_m.merchant .merchant_list li {
+    margin-right: 0;
+    width: 100%;
+}
+.modal_m.merchant .merchant_list p {
+    font-size: 14px;
+    color: #292929;
+}
+.modal_m.merchant .card .status {
+    padding: 2px 15px;
+    font-size: 12px;
+    color: #ccc;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+.modal_m.merchant .card .icon_add {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-image: url('~@/assets/images/icon/add.png');;
+    background-size: cover;
+    background-position: center;
+}
+.modal_button_area_m {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+.modal_button_area_m button {
+    padding: 14px;
+    width: 50%;
+    border: none;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
+}
+.modal_button_area_m button:first-child {border-right: 1px solid #ddd;}
+
+/* 모달 계좌등록 */
+.m_wallet_account-assets .add_account {padding: 0 2px;}
+.m_wallet_account-assets .add_account input {margin-bottom: 10px;}
+.m_wallet_account-assets .created_account div:first-child {padding: 0 2px;}
+.modal_m .account_name {
+    margin-bottom: 3px;
+    font-size: 18px;
+    font-weight: normal;
+}
+.modal_m .account_number {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 300;
+}
+.modal_m .amount {
+    margin-bottom: 4px;
+    font-size: 28px;
+    font-weight: bold;
+}
+.modal_m .amount span {
+    font-size: 20px;
+    font-weight: normal;
+}
+.modal_m .text {
+    font-size: 14px;
+    font-weight: 300;
+}
+.modal_m .text_type01 {
+    margin-bottom: 10px;
+    text-align: left;
+}
+.button_area_type01 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+.button_area_type01 button {
+    padding: 13px 0;
+    width: 50%;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+.button_area_type01 button:nth-child(2) {border-left: 1px solid #ddd}
+.m_inquiry .modal_card_m {padding: 30px 30px 80px;}
+.message .status_icon {
+    display: block;
+    margin: 0 auto 6px;
+    width: 24px;
+    height: 24px;
+}
+.message p {
+    color: #000;
+    font-size: 16px;
+}
+.modal_card_m .bg_black_box span {
+    line-height: 1.5;
+}
+.modal_m.merchant .modal_scrollable {padding: 2px;}

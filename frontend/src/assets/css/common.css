@@ -3,42 +3,6 @@ body {margin: 0;}
 .map_wrap{position: relative;}
 #vue-naver-maps{height: 80vh!important;}
 
-.TUNE{
-width: 24px;
-height: 24px;
-display: inline-block;
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-border-radius: 4px;
-}
-
-
-/* Utility start */
-.overflow_h {overflow: hidden;}
-.overflow_xa {overflow-x: auto;}
-.d_flex {display: flex!important;}
-.justify_start {justify-content: flex-start!important;}
-.justify_end {justify-content: flex-end!important;}
-.justify_between {justify-content: space-between!important;}
-.justify_center {justify-content: center!important;}
-.align_items_start {align-items: flex-start!important;}
-.align_items_center {align-items: center!important;}
-.align_items_end {align-items: flex-end!important;}
-.flex_column {flex-direction: column!important;}
-.flex1 {flex: 1;}
-.flex_grow {flex-grow:1;}
-
-
-
-/* icon */
-.TUNE{
-  background-color: #ffffff;
-background-image: url('~@/assets/images/Tune.png');
-background-size: cover;
-background-position: center;
-}
-
-
-
 /* 색상표 */
 /* :root {
 	--button-blue1:(#81ACFF);
@@ -47,16 +11,19 @@ background-position: center;
 	--w_fs_color:(#ffffff);
 } */
 
+/* Utility start */
 /* flex 속성 정렬 */
 .d_flex {display: flex;}
 .flex_column {flex-direction: column;}
-.justift_center {justify-content: center;}
-.justift_start {justify-content: flex-start;}
+.justify_center {justify-content: center;}
+.justify_start {justify-content: flex-start;}
 .justify_between {justify-content: space-between;}
-.justift_end {justify-content: flex-end;}
+.justify_end {justify-content: flex-end;}
 .align_center {align-items: center;}
 .align_start {align-items: flex-start;}
 .align_end {align-items: flex-end;}
+.flex1 {flex: 1;}
+.flex_grow {flex-grow:1;}
 
 /* margin */
 .mx_0a {margin: 0 auto;}
@@ -162,7 +129,19 @@ background-position: center;
 	background-image: url('~@/assets/images/MORE.png');
 	background-size: cover;
 }
+.TUNE{
+  background-color: #ffffff;
+  background-image: url('~@/assets/images/Tune.png');
+  background-size: cover;
+  background-position: center;
+}
+
 /* button */
+button {
+  border-radius: 20px;
+  border: none;
+  padding: 10px 24px;
+}
 .button_w100 {
 	width: 100%;
 	height: 56px;
@@ -177,31 +156,8 @@ button.skyblue {
 	background: #CCE3FF;
 	color: #81ACFF;
 }
-button {
-	 /* height: 40px; */
-	border-radius: 20px;
-	border: none;
-	padding: 10px 24px;
-}
 
-
-
-
-
-/* swiper custom start */
-
-.swiper-button-next:after {content: '';}
-.swiper-button-prev:after {content: '';}
-
-
-.swiper-pagination-bullet-active {background-color: #ca0000;}
-.swiper-button-next.swiper-button-disabled {opacity: 0;}
-.swiper-button-prev.swiper-button-disabled {opacity: 0;}
-
-/* swiper custom end */
-
-
-
+/* tab area */
 .tab_area {
   display: flex;
   position: fixed;
