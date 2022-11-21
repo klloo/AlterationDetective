@@ -56,42 +56,46 @@ const userContorller = {
      * 회원 가입 인증 메일을 전송한다.
      */
     sendAuthMail: async(req, res) => {
-        // 인증코드 생성
-        const authNum = Math.random().toString().substring(2,6);
+        // 인증코드 생성 (랜덤 6자리 수)
+        const authCode = Math.random().toString().substring(2,8);
         // 이메일 템플릿 설정
         let emailTemplate;
         const appDir = path.dirname(require.main.filename);
-        ejs.renderFile(appDir + '/template/authMail.ejs', { authCode: authNum }, (err, email) => {
+        ejs.renderFile(appDir + '/template/authMail.ejs', { authCode : authCode }, (err, email) => {
             emailTemplate = email;
             if(err) console.log(err);
         });
-        // const transporter = nodemailer.createTransport({
-        //     service: 'gmail',
-        //     host: 'smtp.gmail.com',
-        //     port: 587,
-        //     secure: false,
-        //     auth: {
-        //         user: process.env.NODEMAILER_USER,
-        //         pass: process.env.NODEMAILER_PASS,
-        //     },
-        // });
-    
-        // const email = 'asdf016182@naver.com';
-        // const mailOptions = await transporter.sendMail({
-        //     from: '수선탐정',
-        //     to: email,
-        //     subject: '회원가입을 위한 인증번호를 입력해주세요.',
-        //     html: emailTemplate,
-        // });
 
-        // transporter.sendMail(mailOptions, (error, info) => {
-        //     if (error) {
-        //         console.log(error);
-        //     }
-        //     console.log("Finish sending email : " + info.response);
-        //     res.send(authNum);
-        //     transporter.close()
-        // });
+        // nodemailer 객체 초기화
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.NODEMAILER_USER,
+                pass: process.env.NODEMAILER_PASS,
+            },
+        });
+        
+        // 메일 옵션 설정
+        const email = req.body.email;
+        const mailOptions = {
+            from: '수선탐정',
+            to: email,
+            subject: '회원가입을 위한 인증번호를 입력해주세요.',
+            html: emailTemplate,
+        };
+        // 메일 전송
+        await transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Finish sending email : " + info.response);
+                res.send(authCode);
+            }
+            transporter.close()
+        });
     }
 
 };

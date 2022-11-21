@@ -12,14 +12,14 @@
       <div v-if="joindetail === 'none'">
         <div class="all_checked">
           <div class="d_flex align_center agree justify_start mb_16">
-            <input class="mr_10 checkbox" type="checkbox" />
+            <input class="mr_10 checkbox" type="checkbox" v-model="allCheck" />
             <p>필수 약관 전체동의</p>
           </div>
         </div>
         <div class="single_checked">
           <div class="d_flex agree justify_between">
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="isAllChecked" />
+              <input class="mr_10 checkbox" type="checkbox" v-model="essentialCheck[0]" />
               <span class="essential">(필수)</span>
               <p>개인정보 수집 및 이용 동의</p>
             </div>
@@ -30,7 +30,7 @@
           </div>
           <div class="d_flex agree justify_between">
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="isAllChecked" />
+              <input class="mr_10 checkbox" type="checkbox" v-model="essentialCheck[1]" />
               <span class="essential">(필수)</span>
               <p>서비스 이용약관 동의</p>
             </div>
@@ -41,7 +41,7 @@
           </div>
           <div class="d_flex agree justify_between">
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="isAllChecked" />
+              <input class="mr_10 checkbox" type="checkbox" v-model="selectiveCheck[0]" />
               <span class="essential">(선택)</span>
               <p>위치정보 이용약관</p>
             </div>
@@ -52,7 +52,7 @@
           </div>
           <div class="d_flex agree justify_between">
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="isAllChecked" />
+              <input class="mr_10 checkbox" type="checkbox" v-model="selectiveCheck[1]" />
               <span class="essential">(선택)</span>
               <p>마케팅 수신 동의</p>
             </div>
@@ -64,7 +64,7 @@
         </div>
         <div>
           <p class="fs_14 mb_40">선택항목은 동의하지 않으셔도 서비스를 이용할 수 있어요.</p>
-          <button class="button_w100 blue color_w" @click="joindetail = 'join'">
+          <button class="button_w100 blue color_w" @click="joindetail = 'join'" :disabled="!isAllCheckedEssential">
             다음
           </button>
         </div>
@@ -80,13 +80,13 @@
         <input type="text" class="mail" placeholder="name@email.com" v-model="formData.userEmail" />
       </div>
       <div class="input_box" v-if="numberSend === true">
-        <input type="text" placeholder="인증번호 입력" />
+        <input type="text" placeholder="인증번호 입력" v-model="authCodeInput" />
       </div>
       <div class="tar">
         <!-- 인증번호 전송 클릭하면 인증번호 입력input, 재전송 버튼 나오고 인증번호 전송이 인증번호 확인 버튼으로 변경됨-->
         <button class="blue mr_8" @click="sendAuthMail" v-if="numberSend === false">인증번호 전송</button>
-        <button class="blue mr_8" v-if="numberSend === true" @click="joinPassword = true">인증번호 확인</button>
-        <button class="blue" v-if="numberSend === true">재전송</button>
+        <button class="blue mr_8" v-if="numberSend === true" @click="isCoincideAuthCode">인증번호 확인</button>
+        <button class="blue" v-if="numberSend === true" @click="sendAuthMail">재전송</button>
       </div>
     </div>
     <!-- 인증번호 확인 누르면 비밀번호 입력input, 닉네임 정하는 input 나옴 -->
@@ -104,7 +104,7 @@
         <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." />
       </div>
       <!-- 회원가입 되면 main으로 이동해야함 -->
-      <button class="button_w100 blue color_w">회원가입</button>
+      <button class="button_w100 blue color_w" @click="joinProc">회원가입</button>
     </div>
   </div>
 </template>
@@ -126,22 +126,63 @@ export default {
       joindetail: 'none',
       numberSend: false,
       joinPassword: false,
-      isAllChecked: false,
+      allCheck: false,
+      essentialCheck: [false, false],
+      selectiveCheck: [false, false],
+      isLoading: false,
+      authCodeInput: '',
+      authCode: '',
     };
+  },
+  computed: {
+    /**
+     * 필수 약관이 모두 선택되었는지 확인한다 (true: 모두 선택됨)
+     */
+    isAllCheckedEssential() {
+      if (this.allCheck) return true;
+      return !this.essentialCheck.some((item) => !item);
+    },
+  },
+  watch: {
+    allCheck(value) {
+      this.essentialCheck.fill(value);
+    },
   },
   methods: {
     /**
      * 인증메일을 전송한다.
      */
     sendAuthMail() {
-      sendAuthMail(this.userId, this.password)
+      this.isLoading = true;
+      sendAuthMail({
+        email: this.formData.userEmail,
+      })
         .then((res) => {
-          const authCode = res.data.data;
-          numberSend = true;
+          this.authCode = res.data;
+          if (this.authCode) {
+            this.numberSend = true;
+          }
         })
         .catch((err) => {
           throw new Error(err);
-        });
+        })
+        .finally(() => (this.isLoading = false));
+    },
+    /**
+     * 인증번호가 일치하는지 확인한다.
+     */
+    isCoincideAuthCode() {
+      if (this.authCode.toString() === this.authCodeInput) {
+        this.joinPassword = true;
+      } else {
+        console.log('일치하지 않음');
+      }
+    },
+    /**
+     * 회원가입을 진행한다.
+     */
+    joinProc() {
+      console.log(this.formData);
     },
   },
 };

@@ -2,28 +2,25 @@
   <div>
     <div class="z_index pa_1">
       <div class="input_icon  mb_8">
-        <input  type="text" placeholder="지역명, 매장이름으로 검색하세요.">
+        <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
       </div>
       <div class="d_flex align_center">
         <span class="TUNE mr_8"></span>
         <div class="filter d_flex ">
-          <button :class="{blue: selectedTab === 1 }" @click="selectedTab = 1">추천 수선집</button>
-          <button :class="{blue: selectedTab === 2 }" @click="selectedTab = 2">교복</button>
-          <button :class="{blue: selectedTab === 3 }" @click="selectedTab = 3">어깨</button>
-          <button :class="{blue: selectedTab === 4 }" @click="selectedTab = 4">바지 기장</button>
-          <button :class="{blue: selectedTab === 5 }" @click="selectedTab = 5">소매 기장</button>
+          <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
+          <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
         </div>
       </div>
     </div>
-  <div class="map_wrap">
-    <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
-      <naver-marker :lat="latitude" :lng="longitude" />
-    </naver-maps>
-    <span class="MYPLACE" @click="setCurrentPosition"></span>
-    <alteration-shop-list-swipe />
+    <div class="map_wrap">
+      <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
+        <naver-marker :lat="latitude" :lng="longitude" />
+      </naver-maps>
+      <span class="MYPLACE" @click="setCurrentPosition"></span>
+      <alteration-shop-list-swipe />
+    </div>
+    <!-- <ModalViewM></ModalViewM> -->
   </div>
-  <!-- <ModalViewM></ModalViewM> -->
-</div>
 </template>
 
 <script>
@@ -32,13 +29,13 @@ import AlterationShopListSwipe from './AlterationShopListSwipe';
 
 export default {
   name: 'MainMap',
-  components: {AlterationShopListSwipe,},
+  components: { AlterationShopListSwipe },
   data() {
     // 기본 위치
     const latitude = 37;
     const longitude = 127;
     return {
-      selectedTab: 0,
+      // 지도 관련 필드
       width: null,
       height: 300,
       map: null,
@@ -54,6 +51,9 @@ export default {
         scaleControl: false,
       },
       initLayers: ['BACKGROUND', 'BACKGROUND_DETAIL', 'POI_KOREAN', 'TRANSIT', 'ENGLISH', 'CHINESE', 'JAPANESE'],
+      // 상단 버튼 관련 필드
+      selectedTab: 0,
+      buttonList: ['추천 수선집', '교복', '어깨', '바지', '바지 기장', '소매 기장'],
     };
   },
   methods: {
@@ -81,11 +81,17 @@ export default {
         });
       }
     },
+    /**
+     * 버튼 클래스 반환
+     */
+    buttonClass(idx) {
+      return this.selectedTab === idx ? 'blue' : '';
+    },
   },
 };
 </script>
 <style scoped>
-.TUNE{
+.TUNE {
   flex-shrink: 0;
   width: 24px;
   height: 24px;
@@ -93,21 +99,22 @@ export default {
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
-.z_index{
+.z_index {
   position: absolute;
   z-index: 999;
   width: 100%;
 }
-.test{position:absolute;
-/* bottom: 16px; */
-bottom: 100px;
-right: 16px;
-width: 24px;
-height: 24px;
-background:  url('~@/assets/images/Myplace.png')no-repeat;
-background-size: contain;
+.test {
+  position: absolute;
+  /* bottom: 16px; */
+  bottom: 100px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  background: url('~@/assets/images/Myplace.png') no-repeat;
+  background-size: contain;
 }
-.filter{
+.filter {
   overflow: auto;
   white-space: nowrap;
 }
@@ -118,26 +125,27 @@ background-size: contain;
 .filter::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-.filter span, .filter button{
+.filter span,
+.filter button {
   display: inline-block;
-margin-right: 8px;
+  margin-right: 8px;
 }
-.filter button:last-child{
+.filter button:last-child {
   margin-right: 0;
 }
 button {
-padding: 5px 12px;
-border-width: 0px;
-font-family: inherit;
-font-size: 14px;
-font-weight: normal;
-text-align: center;
-border-radius: 12px;
-border-style: none;
-cursor: pointer;
-background: #FFFFFF;
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-transition: .5s;
+  padding: 5px 12px;
+  border-width: 0px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  border-radius: 12px;
+  border-style: none;
+  cursor: pointer;
+  background: #ffffff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  transition: 0.5s;
 }
 input {
   padding: 16px;
@@ -149,8 +157,8 @@ input {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-.input_icon{
-position: relative;
+.input_icon {
+  position: relative;
 }
 .input_icon:after {
   content: '';
@@ -160,28 +168,49 @@ position: relative;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
-  background: url('~@/assets/images/Search.png')no-repeat;
+  background: url('~@/assets/images/Search.png') no-repeat;
   background-size: cover;
 }
-input:read-only{background-color:#f0f0f0;} */
-input:focus {
+input:read-only {
+  background-color: #f0f0f0;
+}
+*/ input:focus {
   outline: none;
   box-shadow: 0 0 0 2px #ca0000;
 }
-input::placeholder {color: #ACB4BC; -webkit-text-fill-color:#ACB4BC; padding-left: 32px;}
-input:disabled::placeholder {color: #ccc; -webkit-text-fill-color: #ccc;}
-input:disabled {color: #333;-webkit-text-fill-color: #333; font-size: 1em; opacity: 1}
-input:read-only:focus{ border: 1px solid #ddd; outline:none;}
-input[type=text], input[type=password], input[type=email], input[type=file] {width: 100%;}
-
+input::placeholder {
+  color: #acb4bc;
+  -webkit-text-fill-color: #acb4bc;
+  padding-left: 32px;
+}
+input:disabled::placeholder {
+  color: #ccc;
+  -webkit-text-fill-color: #ccc;
+}
+input:disabled {
+  color: #333;
+  -webkit-text-fill-color: #333;
+  font-size: 1em;
+  opacity: 1;
+}
+input:read-only:focus {
+  border: 1px solid #ddd;
+  outline: none;
+}
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='file'] {
+  width: 100%;
+}
 
 .map_wrap {
   position: relative;
-    top: 0;
-    left: 0;
-    width: 100vw;
+  top: 0;
+  left: 0;
+  width: 100vw;
 }
-.MYPLACE {
+b .MYPLACE {
   z-index: 999;
   position: absolute;
   bottom: 16px;
@@ -190,9 +219,9 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
   height: 24px;
   background: url('~@/assets/images/Myplace.png') no-repeat;
   background-size: contain;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-border-radius: 4px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 </style>
