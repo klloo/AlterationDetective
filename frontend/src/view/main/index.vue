@@ -17,8 +17,15 @@
     <components :is="currentComponent" />
     <div>
       <ul class="tab_area">
-        <li v-for="(tab, index) in tabList" :key="index" style="cursor:pointer" @click="currentComponent = tab.component">
-          <img :src="tab.img" alt="menu" />
+        <li v-for="(tab, index) in tabList"
+        :key="index" style="cursor:pointer"
+        @click="currentComponent = tab.component"
+        :class="{active: currentComponent === tab.component}"
+        >
+          <div class="tab_item">
+            <img :src="tab.img2" alt="menu" v-if="currentComponent === tab.component"/>
+            <img :src="tab.img" alt="menu" v-else />
+          </div>
         </li>
       </ul>
     </div>
@@ -84,6 +91,9 @@ export default {
 </script>
 
 <style scoped>
+.active {
+  border-bottom: 2px solid #8AB2FF;
+}
 .z_index{
   position: absolute;
   z-index: 999;
