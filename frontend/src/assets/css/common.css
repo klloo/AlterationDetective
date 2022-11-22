@@ -89,7 +89,7 @@ body {margin: 0;}
 .fs_12 {font-size: 12px; line-height: 1.5;}
 .fs_14 {font-size: 14px; line-height: 1.5;}
 .fs_16 {font-size: 16px; line-height: 1.5;}
-.fs_20 {font-size: 20px; line-height: 1.5;}
+.fs_20 {font-size: 20px !important; line-height: 1.5;}
 .fs_24 {font-size: 24px; line-height: 1.5;}
 .fs_28 {font-size: 28px; line-height: 1.5;}
 .fs_32 {font-size: 32px; line-height: 1.5;}
