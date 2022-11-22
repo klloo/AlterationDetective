@@ -42,6 +42,7 @@ body {margin: 0;}
 /* right */
 .mr_4 {margin-right: 4px;}
 .mr_8 {margin-right: 8px;}
+.mr_16 {margin-right: 16px;}
 /* left */
 .ml_4 {margin-left: 4px;}
 .ml_8 {margin-left: 8px;}
@@ -130,10 +131,18 @@ body {margin: 0;}
 	background-size: cover;
 }
 .TUNE{
-  background-color: #ffffff;
   background-image: url('~@/assets/images/Tune.png');
   background-size: cover;
-  background-position: center;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.MYPLACE {
+  background: url('~@/assets/images/Myplace.png') no-repeat;
+  background-size: cover;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 /* button */
@@ -156,6 +165,23 @@ button.skyblue {
 	background: #CCE3FF;
 	color: #81ACFF;
 }
+
+/* input */
+input {
+  padding: 16px;
+  border: 0;
+  color: #333;
+  font-size: 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(138,178,255,1);
+}
+input::placeholder {color: #ACB4BC; -webkit-text-fill-color:#ACB4BC;}
+input[type=text], input[type=password], input[type=email], input[type=file] {width: 100%;}
 
 /* tab area */
 .tab_area {

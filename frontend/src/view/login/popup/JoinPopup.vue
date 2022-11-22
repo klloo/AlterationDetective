@@ -11,54 +11,67 @@
       <!-- 약관동의 페이지 -->
       <div v-if="joindetail === 'none'">
         <div class="all_checked">
-          <div class="d_flex align_center agree justify_start mb_16">
-            <input class="mr_10 checkbox" type="checkbox" v-model="allCheck" />
+          <label class="checkbox mb_16">
+            <input type="checkbox" v-model="allCheck"/>
+            <span class="checkbox_icon mr_8"></span>
             <p>필수 약관 전체동의</p>
-          </div>
+          </label>
         </div>
         <div class="single_checked">
-          <div class="d_flex agree justify_between">
+          <div>
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="essentialCheck[0]" />
+            <label class="checkbox">
+              <input type="checkbox" v-model="essentialCheck[0]"/>
+              <span class="checkbox_icon mr_8"></span>
               <span class="essential">(필수)</span>
               <p>개인정보 수집 및 이용 동의</p>
+            </label>
             </div>
             <div class="d_flex align_center">
-              <p class="fs_12 mr_8">보기</p>
-              <span class="MORE"></span>
+            <p class="fs_12 mr_8">보기</p>
+            <span class="MORE"></span>
             </div>
           </div>
-          <div class="d_flex agree justify_between">
+          <div>
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="essentialCheck[1]" />
+            <label class="checkbox">
+              <input type="checkbox" v-model="essentialCheck[1]" />
+              <span class="checkbox_icon mr_8"></span>
               <span class="essential">(필수)</span>
               <p>서비스 이용약관 동의</p>
+            </label>
             </div>
             <div class="d_flex align_center">
-              <p class="fs_12 mr_8">보기</p>
-              <span class="MORE"></span>
+            <p class="fs_12 mr_8">보기</p>
+            <span class="MORE"></span>
             </div>
           </div>
-          <div class="d_flex agree justify_between">
+          <div>
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="selectiveCheck[0]" />
+            <label class="checkbox">
+              <input type="checkbox" v-model="selectiveCheck[0]"/>
+              <span class="checkbox_icon mr_8"></span>
               <span class="essential">(선택)</span>
               <p>위치정보 이용약관</p>
+            </label>
             </div>
             <div class="d_flex align_center">
-              <p class="fs_12 mr_8">보기</p>
-              <span class="MORE"></span>
+            <p class="fs_12 mr_8">보기</p>
+            <span class="MORE"></span>
             </div>
           </div>
-          <div class="d_flex agree justify_between">
+          <div>
             <div class="d_flex align_center">
-              <input class="mr_10 checkbox" type="checkbox" v-model="selectiveCheck[1]" />
+            <label class="checkbox">
+              <input type="checkbox" v-model="selectiveCheck[1]"/>
+              <span class="checkbox_icon mr_8"></span>
               <span class="essential">(선택)</span>
               <p>마케팅 수신 동의</p>
+            </label>
             </div>
             <div class="d_flex align_center">
-              <p class="fs_12 mr_8">보기</p>
-              <span class="MORE"></span>
+            <p class="fs_12 mr_8">보기</p>
+            <span class="MORE"></span>
             </div>
           </div>
         </div>
