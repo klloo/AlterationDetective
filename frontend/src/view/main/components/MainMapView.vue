@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="z_index pa_1">
-      <div class="input_icon  mb_8">
+    <div class="search_box pa_1">
+      <div class="input_box">
         <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
       </div>
       <div class="d_flex align_center">
-        <span class="TUNE mr_8"></span>
-        <div class="filter d_flex ">
+        <span class="TUNE"></span>
+        <div class="filter">
           <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
           <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
         </div>
@@ -91,137 +91,80 @@ export default {
 };
 </script>
 <style scoped>
-.TUNE {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-.z_index {
-  position: absolute;
-  z-index: 999;
-  width: 100%;
-}
-.test {
-  position: absolute;
-  /* bottom: 16px; */
-  bottom: 100px;
-  right: 16px;
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Myplace.png') no-repeat;
-  background-size: contain;
-}
-.filter {
-  overflow: auto;
-  white-space: nowrap;
-}
-.filter {
-  -ms-overflow-style: none; /* IE, Edge */
-  scrollbar-width: none; /* Firefox */
-}
-.filter::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-.filter span,
-.filter button {
-  display: inline-block;
-  margin-right: 8px;
-}
-.filter button:last-child {
-  margin-right: 0;
-}
-button {
-  padding: 5px 12px;
-  border-width: 0px;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: normal;
-  text-align: center;
-  border-radius: 12px;
-  border-style: none;
-  cursor: pointer;
-  background: #ffffff;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-  transition: 0.5s;
-}
-input {
-  padding: 16px;
-  border: 0;
-  color: #333;
-  font-size: 16px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-}
-.input_icon {
+.main .search_box{
+	position: absolute;
+	z-index: 999;
+	width: 100%;
+	padding: 1em;
+  }
+  .main .input_box{
   position: relative;
-}
-.input_icon:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Search.png') no-repeat;
-  background-size: cover;
-}
-input:read-only {
-  background-color: #f0f0f0;
-}
-*/ input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #ca0000;
-}
-input::placeholder {
-  color: #acb4bc;
-  -webkit-text-fill-color: #acb4bc;
-  padding-left: 32px;
-}
-input:disabled::placeholder {
-  color: #ccc;
-  -webkit-text-fill-color: #ccc;
-}
-input:disabled {
-  color: #333;
-  -webkit-text-fill-color: #333;
-  font-size: 1em;
-  opacity: 1;
-}
-input:read-only:focus {
-  border: 1px solid #ddd;
-  outline: none;
-}
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='file'] {
-  width: 100%;
-}
-
-.map_wrap {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100vw;
-}
-b .MYPLACE {
-  z-index: 999;
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Myplace.png') no-repeat;
-  background-size: contain;
-  background-color: #ffffff;
-
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-</style>
+  margin-bottom: 8px;
+  }
+  .main .input_box:after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 12px;
+	transform: translateY(-50%);
+	width: 24px;
+	height: 24px;
+	background: url('~@/assets/images/Search.png')no-repeat;
+	background-size: cover;
+  }
+  .main .input_box input{
+    padding-left: 48px;
+  }
+  .main .TUNE{
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+	margin-right: 8px;
+  }
+  .main .filter{
+	overflow: auto;
+	white-space: nowrap;
+	-ms-overflow-style: none; /* IE, Edge */
+	scrollbar-width: none; /* Firefox */
+	display: flex;
+  }
+  .main .filter::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
+  }
+  .main .filter span, .filter button{
+	display: inline-block;
+	margin-right: 8px;
+  }
+  .main .filter button:last-child{
+	margin-right: 0;
+  }
+  .main button {
+	padding: 5px 12px;
+	border-width: 0px;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: normal;
+	text-align: center;
+	border-radius: 12px;
+	border-style: none;
+	cursor: pointer;
+	background: #FFFFFF;
+	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+	transition: .5s;
+  }
+  .map_wrap {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100vw;
+  }
+  .main .MYPLACE {
+	z-index: 999;
+	position: absolute;
+	bottom: 16px;
+	right: 16px;
+	width: 24px;
+	height: 24px;
+  }
+  </style>

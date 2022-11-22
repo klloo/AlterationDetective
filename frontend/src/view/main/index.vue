@@ -80,5 +80,4 @@ export default {
 <style scoped>
 .active {
   border-bottom: 2px solid #8AB2FF;
-  transition: all .5s;
 }</style>

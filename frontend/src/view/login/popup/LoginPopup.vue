@@ -12,18 +12,15 @@
       <!-- 로그인 input -->
       <p class="title">Login</p>
       <div class="input_box">
-        <div>
-          <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
-        </div>
-        <div>
-          <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
-        </div>
+        <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
+        <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
       </div>
       <!-- 자동로그인 -->
-      <div class="d_flex align_center mb_40">
-        <input type="checkbox" class="checkbox" />
-        <p>자동로그인</p>
-      </div>
+      <label class="checkbox mb_40">
+			  <input type="checkbox"/>
+			  <span class="checkbox_icon mr_8"></span>
+			  <p>자동로그인</p>
+			</label>
       <!-- 로그인 버튼 -->
       <div class="mb_24">
         <button @click="login" class="button_w100 blue color_w">로그인</button>
