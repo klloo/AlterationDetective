@@ -108,10 +108,10 @@
         <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="formData.userEmail" />
       </div>
       <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
+        <input type="password" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
       </div>
       <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
+        <input type="password" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
       </div>
       <div class="input_box mb_40" v-if="numberSend === true">
         <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." />
@@ -201,4 +201,8 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+.join_container {
+  margin-top: 63px;
+}
+</style>
