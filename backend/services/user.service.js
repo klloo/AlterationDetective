@@ -7,7 +7,8 @@ const userService = {
             if (error) {
                 reject(error);
             }
-            resolve(data[0]);
+            // resolve(data[0]);
+            resolve({})
         });
     }),
 };     
