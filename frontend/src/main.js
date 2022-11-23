@@ -8,9 +8,9 @@ import store from './store';
 import naver from 'vue-naver-maps';
 import VueGeolocation from 'vue-geolocation-api';
 import './permission';
-import '@/assets/css/reset.css'
-import '@/assets/css/common.css'
-
+import '@/assets/css/reset.css';
+import '@/assets/css/common.css';
+import Notifications from 'vue-notification'
 
 Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
@@ -22,6 +22,7 @@ Vue.use(naver, {
 });
 
 Vue.use(VueGeolocation);
+Vue.use(Notifications);
 
 /* eslint-disable no-new */
 new Vue({

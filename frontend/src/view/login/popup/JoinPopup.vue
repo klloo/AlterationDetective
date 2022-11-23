@@ -76,46 +76,95 @@
         회원가입을 위해 <br />
         이메일 인증을 해주세요.
       </p>
-      <div class="input_box">
-        <input type="text" class="mail" placeholder="name@email.com" v-model="formData.userEmail" />
-      </div>
-      <div class="input_box" v-if="numberSend === true">
-        <input type="text" placeholder="인증번호 입력" v-model="authCodeInput" />
-      </div>
+      <!-- 이메일 입력 -->
+      <validation-observer ref="emailForm">
+        <form>
+          <validation-provider class="input_box" rules="required|email" v-slot="{ errors }">
+            <input type="text" class="mail" placeholder="name@email.com" v-model="formData.userEmail" />
+            <p class="error_msg">{{ errors[0] }}</p>
+          </validation-provider>
+        </form>
+      </validation-observer>
+      <!-- 인증번호 입력 -->
+      <validation-observer ref="authCodeForm">
+        <form>
+          <validation-provider class="input_box" v-if="numberSend === true" rules="required|isCoincideAuthCode" v-slot="{ errors }">
+            <input type="text" placeholder="인증번호 입력" v-model="authCodeInput" />
+            <p class="error_msg">{{ errors[0] }}</p>
+          </validation-provider>
+        </form>
+      </validation-observer>
       <div class="tar">
         <!-- 인증번호 전송 클릭하면 인증번호 입력input, 재전송 버튼 나오고 인증번호 전송이 인증번호 확인 버튼으로 변경됨-->
-        <button class="blue mr_8" @click="sendAuthMail" v-if="numberSend === false">인증번호 전송</button>
-        <button class="blue mr_8" v-if="numberSend === true" @click="isCoincideAuthCode">인증번호 확인</button>
+        <button class="blue mr_8" @click="checkEmailValidate" v-if="numberSend === false">인증번호 전송</button>
+        <button class="blue mr_8" v-if="numberSend === true" @click="checkAuthCode">인증번호 확인</button>
         <button class="blue" v-if="numberSend === true" @click="sendAuthMail">재전송</button>
       </div>
     </div>
+    <!-- 회원 가입 폼 입력 -->
     <!-- 인증번호 확인 누르면 비밀번호 입력input, 닉네임 정하는 input 나옴 -->
-    <div v-if="joinPassword === true">
-      <div class="input_box">
-        <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="formData.userEmail" />
-      </div>
-      <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
-      </div>
-      <div class="input_box" v-if="numberSend === true">
-        <input type="text" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
-      </div>
-      <div class="input_box mb_40" v-if="numberSend === true">
-        <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." />
-      </div>
-      <!-- 회원가입 되면 main으로 이동해야함 -->
-      <button class="button_w100 blue color_w" @click="joinProc">회원가입</button>
-    </div>
+    <validation-observer ref="userForm" v-if="joinPassword === true">
+      <form>
+        <div class="input_box">
+          <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="formData.userEmail" disabled />
+        </div>
+        <validation-provider class="input_box" rules="required" v-slot="{ errors }">
+          <input type="password" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
+          <p class="error_msg">{{ errors[0] }}</p>
+        </validation-provider>
+        <validation-provider class="input_box" rules="required|isCoincidePassword" v-slot="{ errors }">
+          <input type="password" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
+          <p class="error_msg">{{ errors[0] }}</p>
+        </validation-provider>
+        <validation-provider class="input_box mb-40" rules="required" v-slot="{ errors }">
+          <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." v-model="formData.username" />
+          <p class="error_msg">{{ errors[0] }}</p>
+        </validation-provider>
+      </form>
+      <button class="button_w100 blue color_w" @click="checkUserFormValidate">회원가입</button>
+    </validation-observer>
   </div>
 </template>
 
 <script>
+import { isNil } from 'lodash';
 import { sendAuthMail } from '@/api/user';
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
+import { required, email } from 'vee-validate/dist/rules';
 
 export default {
   name: 'JoinPopup',
-  emits: ['home'],
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
+    extend('required', {
+      ...required,
+      message: '필수 항목입니다.',
+    });
+    extend('email', {
+      ...email,
+      message: '올바른 형식이 아닙니다.',
+    });
+    extend('isCoincideAuthCode', {
+      validate: (value) => {
+        if (!isNil(this.authCode) && !isNil(value)) {
+          return this.authCode.toString() === value.toString();
+        }
+        return false;
+      },
+      message: '인증번호가 일치하지 않습니다.',
+    });
+    extend('isCoincidePassword', {
+      validate: (value) => {
+        if (!isNil(this.formData.password) && !isNil(value)) {
+          return this.formData.password === value;
+        }
+        return false;
+      },
+      message: '비밀번호가 일치하지 않습니다.',
+    });
     return {
       formData: {
         userEmail: '',
@@ -131,7 +180,7 @@ export default {
       selectiveCheck: [false, false],
       isLoading: false,
       authCodeInput: '',
-      authCode: '',
+      authCode: '123',
     };
   },
   computed: {
@@ -149,6 +198,39 @@ export default {
     },
   },
   methods: {
+    /**
+     * 이메일 폼 유효성을 확인한다.
+     */
+    checkEmailValidate() {
+      this.$refs.emailForm.validate().then((success) => {
+        if (!success) {
+          return;
+        }
+        this.sendAuthMail();
+      });
+    },
+    /**
+     * 인증번호를 확인한다.
+     */
+    checkAuthCode() {
+      this.$refs.authCodeForm.validate().then((success) => {
+        if (!success) {
+          return;
+        }
+        this.joinPassword = true;
+      });
+    },
+    /**
+     * 회원 정보 폼 유효성을 확인한다.
+     */
+    checkUserFormValidate() {
+      this.$refs.userForm.validate().then((success) => {
+        if (!success) {
+          return;
+        }
+        this.joinProc();
+      });
+    },
     /**
      * 인증메일을 전송한다.
      */
@@ -169,20 +251,10 @@ export default {
         .finally(() => (this.isLoading = false));
     },
     /**
-     * 인증번호가 일치하는지 확인한다.
-     */
-    isCoincideAuthCode() {
-      if (this.authCode.toString() === this.authCodeInput) {
-        this.joinPassword = true;
-      } else {
-        console.log('일치하지 않음');
-      }
-    },
-    /**
      * 회원가입을 진행한다.
      */
     joinProc() {
-      console.log(this.formData);
+      this.$notify('회원가입이 완료되었습니다.');
     },
   },
 };

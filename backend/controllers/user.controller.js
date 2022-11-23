@@ -1,6 +1,4 @@
-const { application } = require('express');
 const passport = require('passport');
-const { request } = require('../app');
 const UserService = require('../services/user.service');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
