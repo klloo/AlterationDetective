@@ -235,20 +235,22 @@ export default {
      * 인증메일을 전송한다.
      */
     sendAuthMail() {
-      this.isLoading = true;
-      sendAuthMail({
-        email: this.formData.userEmail,
-      })
-        .then((res) => {
-          this.authCode = res.data;
-          if (this.authCode) {
-            this.numberSend = true;
-          }
-        })
-        .catch((err) => {
-          throw new Error(err);
-        })
-        .finally(() => (this.isLoading = false));
+      console.log('send');
+      this.numberSend = true;
+      // this.isLoading = true;
+      // sendAuthMail({
+      //   email: this.formData.userEmail,
+      // })
+      //   .then((res) => {
+      //     this.authCode = res.data;
+      //     if (this.authCode) {
+      //       this.numberSend = true;
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     throw new Error(err);
+      //   })
+      //   .finally(() => (this.isLoading = false));
     },
     /**
      * 회원가입을 진행한다.
