@@ -6,7 +6,7 @@
       </div>
       <div class="d_flex align_center">
         <span class="TUNE"></span>
-        <div class="filter">
+        <div class="filter py_1">
           <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
           <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
         </div>
@@ -17,7 +17,7 @@
         <naver-marker :lat="latitude" :lng="longitude" />
       </naver-maps>
       <span class="MYPLACE" @click="setCurrentPosition"></span>
-      <alteration-shop-list-swipe />
+      <!-- <alteration-shop-list-swipe /> -->
     </div>
     <!-- <ModalViewM></ModalViewM> -->
   </div>
@@ -29,7 +29,7 @@ import AlterationShopListSwipe from './AlterationShopListSwipe';
 
 export default {
   name: 'MainMap',
-  components: { AlterationShopListSwipe },
+  components: { AlterationShopListSwipe},
   data() {
     // 기본 위치
     const latitude = 37;
@@ -99,7 +99,6 @@ export default {
   }
   .main .input_box{
   position: relative;
-  margin-bottom: 8px;
   }
   .main .input_box:after {
 	content: '';
@@ -114,6 +113,7 @@ export default {
   }
   .main .input_box input{
     padding-left: 48px;
+    box-shadow: 0px 0px 8px rgb(0 0 0 / 20%)
   }
   .main .TUNE{
 	flex-shrink: 0;
@@ -162,7 +162,7 @@ export default {
   .main .MYPLACE {
 	z-index: 999;
 	position: absolute;
-	bottom: 16px;
+	bottom: 8px;
 	right: 16px;
 	width: 24px;
 	height: 24px;

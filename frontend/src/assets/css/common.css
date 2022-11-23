@@ -1,7 +1,7 @@
 body {margin: 0;}
 #app{margin-top: 0!important;}
 .map_wrap{position: relative;}
-#vue-naver-maps{height: 80vh!important;}
+#vue-naver-maps{height: calc(100vh - 64px)!important;}
 
 /* 색상표 */
 /* :root {
@@ -49,24 +49,25 @@ body {margin: 0;}
 
 /* padding */
 .px_1 {padding: 0 16px;}
+.py_1 {padding: 16px 0;}
 /* bottom */
-.pb_4 {margin-bottom: 4px;}
-.pb_8 {margin-bottom: 8px;}
-.pb_16 {margin-bottom: 16px;}
-.pb_32 {margin-bottom: 32px;}
+.pb_4 {padding-bottom: 4px;}
+.pb_8 {padding-bottom: 8px;}
+.pb_16 {padding-bottom: 16px;}
+.pb_32 {padding-bottom: 32px;}
 /* top */
 .pa_0 {padding: 0;}
 .pa_1 {padding: 16px;}
-.pt_4 {margin-top: 4px;}
-.pt_8 {margin-top: 8px;}
-.pt_16 {margin-top: 16px;}
-.pt_32 {margin-top: 32px;}
+.pt_4 {padding-top: 4px;}
+.pt_8 {padding-top: 8px;}
+.pt_16 {padding-top: 16px;}
+.pt_32 {padding-top: 32px;}
 /* right */
-.pr_4 {margin-right: 4px;}
-.pr_8 {margin-right: 8px;}
+.pr_4 {padding-right: 4px;}
+.pr_8 {padding-right: 8px;}
 /* left */
-.pl_4 {margin-left: 4px;}
-.pl_8 {margin-left: 8px;}
+.pl_4 {padding-left: 4px;}
+.pl_8 {padding-left: 8px;}
 
 /* text */
 .tal {text-align: left;}
@@ -190,6 +191,7 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
   bottom: 0;
   width: 100%;
   align-items: center;
+  box-shadow: 0px -4px 16px rgb(0 0 0 / 10%);
 }
 .tab_area > li {
   display: flex;
@@ -197,4 +199,5 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
   justify-content: center;
   width: 25%;
   height: 64px;
+  background-color: #fff;
 }
