@@ -12,49 +12,72 @@
 	width: 140px;
 	height: 176px;
 }
-.title {
+.login .title {
 	font-size: 32px;
 	font-weight: 700;
 	text-align: left;
 	color: #81acff;
 	margin-bottom: 16px;
 }
-.input_box > input {
-	width: 84%;
+.login .input_box > input {
 	height: 56px;
 	margin-bottom: 16px;
-	border: 2px solid #81acff;
-	border-radius: 8px;
+	border: 2px solid rgba(204,227,255,1);
 	background-repeat: no-repeat;
 	background-size: 24px;
 	padding-left: 48px;
-	font-size: 16px;
 }
-.input_box > .check_ok {
-	border: 2px solid #E5E5E5;
+.checkbox{
+  display: flex;
+  align-items: center;
 }
-input[type="checkbox"] {
-	-webkit-appearance: none;
-	position: relative;	width: 16px;
-	height: 16px;	cursor: pointer;
-	outline: none !important;
-	border: 2px solid #8AB2FF;
+.checkbox input {
+	display: none;
+}
+
+.checkbox_icon {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 2px solid  #8AB2FF;
 	border-radius: 2px;
-	margin-right: 10px;
+	position: relative;
+	cursor: pointer;
 }
-input[type="checkbox"]::before {
-	content: "\2713";
-	position: absolute;	top: 50%;
-	left: 50%;	overflow: hidden;
-	transform: scale(0) translate(-50%, -50%);
-	line-height: 1;
+
+.checkbox_icon::before,
+.checkbox_icon::after {
+	content: '';
+	display: inline-block;
+	width: 2px;
+	height: 0;
+	background-color: #fff;
+	position: absolute;
+	transform-origin: left top;
 }
-input[type="checkbox"]:checked {
-	background-color: #8AB2FF;
-	color: white;
+
+.checkbox_icon::before {
+	top: 8px;
+	left: 1px;
+	transform: rotate(-45deg);
 }
-input[type="checkbox"]:checked::before {
-	border-radius: 2px;	transform: scale(1) translate(-50%, -50%);
+.checkbox_icon::after {
+	top: 13px;
+	left: 6px;
+	transform: rotate(-135deg);
+}
+
+.checkbox input:checked + .checkbox_icon {
+	background:  #8AB2FF;
+}
+.checkbox input:checked + .checkbox_icon::before {
+	height: 6px;
+	transition: all 0.15s ease;
+}
+
+.checkbox input:checked + .checkbox_icon::after {
+	height: 11px;
+	transition: all 0.15s ease 0.15s;
 }
 .all_checked:after,
 .single_checked:after {
@@ -65,23 +88,12 @@ input[type="checkbox"]:checked::before {
 	background: #8AB2FF;
 	margin-bottom: 16px;
 }
-.agree {
-	margin-bottom: 16px;
+.single_checked > div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
-.input_box {
-	width: 100%;
-}
-.input_box > div > input {
-	width: 84%;
-	height: 56px;
-	margin-bottom: 16px;
-	border: 2px solid #81acff;
-	border-radius: 8px;
-	background-repeat: no-repeat;
-	background-size: 24px;
-	padding-left: 48px;
-	font-size: 16px;
-}
-.input_box > div > input:focus{
-	border: none;
+.single_checked .essential{
+  color: #538DFD;
 }

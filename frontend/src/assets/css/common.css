@@ -1,7 +1,7 @@
 body {margin: 0;}
 #app{margin-top: 0!important;}
 .map_wrap{position: relative;}
-#vue-naver-maps{height: 80vh!important;}
+#vue-naver-maps{height: calc(100vh - 64px)!important;}
 
 /* 색상표 */
 /* :root {
@@ -42,30 +42,32 @@ body {margin: 0;}
 /* right */
 .mr_4 {margin-right: 4px;}
 .mr_8 {margin-right: 8px;}
+.mr_16 {margin-right: 16px;}
 /* left */
 .ml_4 {margin-left: 4px;}
 .ml_8 {margin-left: 8px;}
 
 /* padding */
 .px_1 {padding: 0 16px;}
+.py_1 {padding: 16px 0;}
 /* bottom */
-.pb_4 {margin-bottom: 4px;}
-.pb_8 {margin-bottom: 8px;}
-.pb_16 {margin-bottom: 16px;}
-.pb_32 {margin-bottom: 32px;}
+.pb_4 {padding-bottom: 4px;}
+.pb_8 {padding-bottom: 8px;}
+.pb_16 {padding-bottom: 16px;}
+.pb_32 {padding-bottom: 32px;}
 /* top */
 .pa_0 {padding: 0;}
 .pa_1 {padding: 16px;}
-.pt_4 {margin-top: 4px;}
-.pt_8 {margin-top: 8px;}
-.pt_16 {margin-top: 16px;}
-.pt_32 {margin-top: 32px;}
+.pt_4 {padding-top: 4px;}
+.pt_8 {padding-top: 8px;}
+.pt_16 {padding-top: 16px;}
+.pt_32 {padding-top: 32px;}
 /* right */
-.pr_4 {margin-right: 4px;}
-.pr_8 {margin-right: 8px;}
+.pr_4 {padding-right: 4px;}
+.pr_8 {padding-right: 8px;}
 /* left */
-.pl_4 {margin-left: 4px;}
-.pl_8 {margin-left: 8px;}
+.pl_4 {padding-left: 4px;}
+.pl_8 {padding-left: 8px;}
 
 /* text */
 .tal {text-align: left;}
@@ -88,7 +90,7 @@ body {margin: 0;}
 .fs_12 {font-size: 12px; line-height: 1.5;}
 .fs_14 {font-size: 14px; line-height: 1.5;}
 .fs_16 {font-size: 16px; line-height: 1.5;}
-.fs_20 {font-size: 20px; line-height: 1.5;}
+.fs_20 {font-size: 20px !important; line-height: 1.5;}
 .fs_24 {font-size: 24px; line-height: 1.5;}
 .fs_28 {font-size: 28px; line-height: 1.5;}
 .fs_32 {font-size: 32px; line-height: 1.5;}
@@ -130,10 +132,18 @@ body {margin: 0;}
 	background-size: cover;
 }
 .TUNE{
-  background-color: #ffffff;
   background-image: url('~@/assets/images/Tune.png');
   background-size: cover;
-  background-position: center;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.MYPLACE {
+  background: url('~@/assets/images/Myplace.png') no-repeat;
+  background-size: cover;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 /* button */
@@ -157,6 +167,23 @@ button.skyblue {
 	color: #81ACFF;
 }
 
+/* input */
+input {
+  padding: 16px;
+  border: 0;
+  color: #333;
+  font-size: 16px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(138,178,255,1);
+}
+input::placeholder {color: #ACB4BC; -webkit-text-fill-color:#ACB4BC;}
+input[type=text], input[type=password], input[type=email], input[type=file] {width: 100%;}
+
 /* tab area */
 .tab_area {
   display: flex;
@@ -164,6 +191,7 @@ button.skyblue {
   bottom: 0;
   width: 100%;
   align-items: center;
+  box-shadow: 0px -4px 16px rgb(0 0 0 / 10%);
 }
 .tab_area > li {
   display: flex;
@@ -171,4 +199,5 @@ button.skyblue {
   justify-content: center;
   width: 25%;
   height: 64px;
+  background-color: #fff;
 }

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="JoinPopup === false">
+  <div class="login_container">
+    <div v-if="JoinPopup === false && Password === false">
       <!-- 뒤로가기 이미지 -->
       <div class="mb_32">
         <span class="BACKARR" @click="$emit('home')"></span>
@@ -12,18 +12,15 @@
       <!-- 로그인 input -->
       <p class="title">Login</p>
       <div class="input_box">
-        <div>
-          <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
-        </div>
-        <div>
-          <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
-        </div>
+        <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
+        <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
       </div>
       <!-- 자동로그인 -->
-      <div class="d_flex align_center mb_40">
-        <input type="checkbox" class="checkbox" />
-        <p>자동로그인</p>
-      </div>
+      <label class="checkbox mb_40">
+			  <input type="checkbox"/>
+			  <span class="checkbox_icon mr_8"></span>
+			  <p>자동로그인</p>
+			</label>
       <!-- 로그인 버튼 -->
       <div class="mb_24">
         <button @click="login" class="button_w100 blue color_w">로그인</button>
@@ -31,12 +28,15 @@
       <!-- 비번찾기 & 회원가입 -->
       <div class="d_flex justify_between mb_24">
         <p>비밀번호를 잊으셨나요?</p>
-        <router-link to="#" class="link_text">비밀번호 재설정</router-link>
+        <p class="link_text" @click="Password = true">비밀번호 재설정</p>
       </div>
       <div class="d_flex justify_between">
         <p>아직 수선탐정 회원이 아니신가요?</p>
         <p class="link_text" @click="JoinPopup = true">회원가입</p>
       </div>
+    </div>
+    <div v-if="Password === true">
+      <Password @home="Password = false"></Password>
     </div>
     <div v-if="JoinPopup === true">
       <JoinPopup @home="JoinPopup = false"></JoinPopup>
@@ -46,6 +46,7 @@
 
 <script>
 import '@/assets/css/Login.css';
+import Password from './Password.vue';
 import JoinPopup from './JoinPopup.vue';
 import { login } from '@/api/user';
 
@@ -54,12 +55,14 @@ export default {
   emits: ['home'],
   components: {
     JoinPopup,
+    Password,
   },
   data() {
     return {
       userId: '',
       password: '',
       JoinPopup: false,
+      Password: false,
     };
   },
   methods: {
@@ -85,4 +88,8 @@ export default {
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+.login_container {
+  margin-top: 63px;
+}
+</style>
