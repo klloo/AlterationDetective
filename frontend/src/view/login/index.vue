@@ -14,7 +14,7 @@
       <LoginPopup @home="mode = 'none'"></LoginPopup>
     </div>
     <div v-if="mode === 'join'" class="px_1">
-      <JoinPopup @home="mode = 'none'"></JoinPopup>
+      <JoinPopup @home="mode = 'none'" @open-login="mode = 'login'"></JoinPopup>
     </div>
   </div>
 </template>

@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user.route');
+const Result = require('./models/result');
 
 const session = require('express-session');
 
@@ -23,6 +24,7 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const hour = 3600000;
 app.use(
   session({
      resave: false,
@@ -31,6 +33,7 @@ app.use(
      cookie: {
         httpOnly: true,
         secure: false,
+        expires : new Date(Date.now() + hour),
      },
   }),
 );
@@ -58,8 +61,12 @@ app.use(function(err, req, res, next) {
   res.locals.message = 'err.message';
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  console.log(err.message);
+  
   // render the error page
-  res.status(err.status || 500);
+  const result = new Result();
+  result.message = err.message;
+  res.status(err.status || 500).send(result);
   res.render('error');
 });
 

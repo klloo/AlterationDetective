@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const PREFIX_URL = '/api/user'
 
+export function registerUser(params) {
+    return axios.post(`${PREFIX_URL}/register`, params);
+}
+
 export function checkLogin() {
     return axios.get(`${PREFIX_URL}/check`);
 }
@@ -16,4 +20,8 @@ export function logout() {
 
 export function sendAuthMail(params) {
     return axios.post(`${PREFIX_URL}/send-auth-mail`, params);
+}
+
+export function checkDuplicatedEmail(params) {
+    return axios.post(`${PREFIX_URL}/check-duplicated-email`, params);
 }

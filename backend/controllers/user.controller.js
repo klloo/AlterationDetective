@@ -3,20 +3,41 @@ const UserService = require('../services/user.service');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
+const Result = require('../models/result');
 
 const userContorller = {
-    getTestDataList: async (req, res) => {
-        data = await UserService.getTestDataList;
-        res.send(data);
+    /**
+     * 회원가입 시 사용자 정보를 저장한다.
+     */
+    registerUser: async (req, res) => {
+        const userInfo = req.body;
+        await UserService.registerUser(userInfo);
+        const result = new Result();
+        result.success = true;
+        res.status(200).send(result);
+    },
+    /**
+     * 중복되는 이메일인지 여부를 조회한다. (true: 중복, false: 중복X)
+     */
+    checkDuplicatedEmail: async (req, res) => {
+        const email = req.body.email;
+        const data = await UserService.checkDuplicatedEmail(email);
+        const result = new Result();
+        result.success = true;
+        result.data = data;
+        res.send(result);
     },
     /**
      * 현재 로그인 중인 사용자 조회
      */
     getLoginUser: (req, res, next) => {
+        const result = new Result();
         if(req.isAuthenticated() && req.user) {
+            result.success = true;
+            result.data = req.user;
             return res.send({ user: req.user });
         }
-        return res.send({ user: null });
+        return res.send(result);
     },
     /**
      * 로그인 한다
@@ -25,18 +46,22 @@ const userContorller = {
         if(req.isAuthenticated()) {
             return res.redirect('/');
         }
+        const result = new Result();
         passport.authenticate('local', (authError, user, info) => {
             if(authError) {
                 return next(authError);
             }
             if(!user) {
-                return res.send(info);
+                result.message = info;
+                return res.send(result);
             }
             return req.login(user, (loginError) => {
                 if(loginError) {
                     return next(loginError);
                 }
-                return res.send({ user });
+                result.success = true;
+                result.data = user;
+                return res.send(result);
             });
         })(req, res, next);
     },
@@ -47,7 +72,9 @@ const userContorller = {
         req.logout((err) => {
             req.session.destroy();
             if(err) res.redirect('/');
-            res.status(200).send('complete logout');
+            const result = new Result();
+            result.success = true;
+            res.status(200).send(result);
         });
     },
     /**
@@ -85,12 +112,15 @@ const userContorller = {
             html: emailTemplate,
         };
         // 메일 전송
+        const result = new Result();
         await transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
             } else {
                 console.log("Finish sending email : " + info.response);
-                res.send(authCode);
+                result.success = true;
+                result.data = authCode;
+                res.send(result);
             }
             transporter.close()
         });

@@ -12,15 +12,15 @@
       <!-- 로그인 input -->
       <p class="title">Login</p>
       <div class="input_box">
-        <input type="text" class="mail" placeholder="name@email.com" v-model="userId" />
+        <input type="text" class="mail" placeholder="name@email.com" v-model="userEmail" />
         <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
       </div>
       <!-- 자동로그인 -->
       <label class="checkbox mb_40">
-			  <input type="checkbox"/>
-			  <span class="checkbox_icon mr_8"></span>
-			  <p>자동로그인</p>
-			</label>
+        <input type="checkbox" />
+        <span class="checkbox_icon mr_8"></span>
+        <p>자동로그인</p>
+      </label>
       <!-- 로그인 버튼 -->
       <div class="mb_24">
         <button @click="login" class="button_w100 blue color_w">로그인</button>
@@ -59,7 +59,7 @@ export default {
   },
   data() {
     return {
-      userId: '',
+      userEmail: '',
       password: '',
       JoinPopup: false,
       Password: false,
@@ -68,14 +68,19 @@ export default {
   methods: {
     login() {
       const loginInfo = {
-        userId: this.userId,
+        userEmail: this.userEmail,
         password: this.password,
       };
       login(loginInfo)
         .then((data) => {
-          const userInfo = data.data;
-          this.$store.dispatch('setUserInfo', userInfo);
-          this.$router.push('/');
+          const result = data.data;
+          if (result.success) {
+            const userInfo = result.data;
+            this.$store.dispatch('setUserInfo', userInfo);
+            this.$router.push('/');
+          } else {
+            this.$notify(data.data.user.message);
+          }
         })
         .catch((err) => {
           throw new Error(err);
