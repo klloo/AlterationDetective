@@ -141,7 +141,7 @@
 
 <script>
 import { isNil } from 'lodash';
-import { sendAuthMail } from '@/api/user';
+import { sendAuthMail, registerUser, checkDuplicatedEmail } from '@/api/user';
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import { required, email } from 'vee-validate/dist/rules';
 
@@ -219,7 +219,24 @@ export default {
         if (!success) {
           return;
         }
-        this.sendAuthMail();
+        // 이메일 중복 여부를 확인한다.
+        checkDuplicatedEmail({
+          email: this.formData.userEmail,
+        })
+          .then((data) => {
+            const result = data.data;
+            if (result.success) {
+              if (result.data) {
+                this.$notify('이미 가입된 이메일입니다.');
+                return;
+              } else {
+                this.sendAuthMail();
+              }
+            }
+          })
+          .catch((err) => {
+            throw new Error(err);
+          });
       });
     },
     /**
@@ -248,28 +265,45 @@ export default {
      * 인증메일을 전송한다.
      */
     sendAuthMail() {
-      console.log('send');
       this.numberSend = true;
-      // this.isLoading = true;
-      // sendAuthMail({
-      //   email: this.formData.userEmail,
-      // })
-      //   .then((res) => {
-      //     this.authCode = res.data;
-      //     if (this.authCode) {
-      //       this.numberSend = true;
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     throw new Error(err);
-      //   })
-      //   .finally(() => (this.isLoading = false));
+      this.isLoading = true;
+      sendAuthMail({
+        email: this.formData.userEmail,
+      })
+        .then((data) => {
+          const result = data.data;
+          if (result.success) {
+            this.authCode = result.data;
+            if (this.authCode) {
+              this.numberSend = true;
+            }
+          } else {
+            this.$notify('인증메일 전송에 실패하였습니다');
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        })
+        .finally(() => (this.isLoading = false));
     },
     /**
      * 회원가입을 진행한다.
      */
     joinProc() {
-      this.$notify('회원가입이 완료되었습니다.');
+      registerUser(this.formData)
+        .then((data) => {
+          const result = data.data;
+          if (result.success) {
+            this.$notify('회원가입이 완료되었습니다.');
+            this.$emit('open-login');
+          } else {
+            this.$notify('회원가입에 실패하였습니다.');
+          }
+        })
+        .catch((err) => {
+          this.$notify('회원가입에 실패하였습니다.');
+          throw new Error(err);
+        });
     },
   },
 };

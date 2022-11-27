@@ -12,9 +12,11 @@ export default {
   name: 'MyPageView',
   methods: {
     logout() {
-      logout().then(() => {
-        this.$store.dispatch('setUserInfo', {});
-        this.$router.go(this.$router.currentRoute);
+      logout().then((data) => {
+        if (data.data.success) {
+          this.$store.dispatch('setUserInfo', {});
+          this.$router.go(this.$router.currentRoute);
+        }
       });
     },
   },
