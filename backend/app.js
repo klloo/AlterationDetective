@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user.route');
+const alterationShopRouter = require('./routes/alterationShop.route');
 const Result = require('./models/result');
 
 const session = require('express-session');
@@ -43,6 +44,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/api/user', userRouter);
+app.use('/api/alteration-shop', alterationShopRouter);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -65,7 +67,9 @@ app.use(function(err, req, res, next) {
   
   // render the error page
   const result = new Result();
-  result.message = err.message;
+  if(err.status) {
+    result.message = err.message;
+  }
   res.status(err.status || 500).send(result);
   res.render('error');
 });

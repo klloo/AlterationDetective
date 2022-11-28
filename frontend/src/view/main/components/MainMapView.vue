@@ -15,6 +15,7 @@
     <div class="map_wrap">
       <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
         <naver-marker :lat="latitude" :lng="longitude" />
+        <naver-marker v-for="(item, index) in altreationShopList" :key="index" :lat="item.latitude" :lng="item.longitude"></naver-marker>
       </naver-maps>
       <span class="MYPLACE" @click="setCurrentPosition"></span>
       <!-- <alteration-shop-list-swipe /> -->
@@ -26,10 +27,11 @@
 <script>
 // import ModalViewM from '@/components/Layout/ModalSlideUp';
 import AlterationShopListSwipe from './AlterationShopListSwipe';
+import { getAlterationShopList } from '@/api/alteration-shop';
 
 export default {
   name: 'MainMap',
-  components: { AlterationShopListSwipe},
+  components: { AlterationShopListSwipe },
   data() {
     // 기본 위치
     const latitude = 37;
@@ -54,6 +56,8 @@ export default {
       // 상단 버튼 관련 필드
       selectedTab: 0,
       buttonList: ['추천 수선집', '교복', '어깨', '바지', '바지 기장', '소매 기장'],
+      // 수선집 목록
+      altreationShopList: [],
     };
   },
   methods: {
@@ -63,6 +67,18 @@ export default {
      */
     onLoad(map) {
       this.map = map;
+      // 수선집 목록 조회
+      getAlterationShopList()
+        .then((data) => {
+          const result = data.data;
+          if (result.success) {
+            this.altreationShopList = result.data;
+            this.setShopMarker;
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
       this.setCurrentPosition();
     },
     /**
@@ -81,6 +97,15 @@ export default {
         });
       }
     },
+    setShopMarker() {
+      this.altreationShopList.forEach((item) => {
+        const marker = new naver.maps.Marker({
+          map: this.map,
+          title: item.alterationShopName,
+          position: new naver.maps.LatLng(item.latitude, item.longitude),
+        });
+      });
+    },
     /**
      * 버튼 클래스 반환
      */
@@ -91,80 +116,81 @@ export default {
 };
 </script>
 <style scoped>
-.main .search_box{
-	position: absolute;
-	z-index: 999;
-	width: 100%;
-	padding: 1em;
-  }
-  .main .input_box{
+.main .search_box {
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  padding: 1em;
+}
+.main .input_box {
   position: relative;
-  }
-  .main .input_box:after {
-	content: '';
-	position: absolute;
-	top: 50%;
-	left: 12px;
-	transform: translateY(-50%);
-	width: 24px;
-	height: 24px;
-	background: url('~@/assets/images/Search.png')no-repeat;
-	background-size: cover;
-  }
-  .main .input_box input{
-    padding-left: 48px;
-    box-shadow: 0px 0px 8px rgb(0 0 0 / 20%)
-  }
-  .main .TUNE{
-	flex-shrink: 0;
-	width: 24px;
-	height: 24px;
-	display: inline-block;
-	margin-right: 8px;
-  }
-  .main .filter{
-	overflow: auto;
-	white-space: nowrap;
-	-ms-overflow-style: none; /* IE, Edge */
-	scrollbar-width: none; /* Firefox */
-	display: flex;
-  }
-  .main .filter::-webkit-scrollbar {
-	display: none; /* Chrome, Safari, Opera */
-  }
-  .main .filter span, .filter button{
-	display: inline-block;
-	margin-right: 8px;
-  }
-  .main .filter button:last-child{
-	margin-right: 0;
-  }
-  .main button {
-	padding: 5px 12px;
-	border-width: 0px;
-	font-family: inherit;
-	font-size: 14px;
-	font-weight: normal;
-	text-align: center;
-	border-radius: 12px;
-	border-style: none;
-	cursor: pointer;
-	background: #FFFFFF;
-	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-	transition: .5s;
-  }
-  .map_wrap {
-	position: relative;
-	top: 0;
-	left: 0;
-	width: 100vw;
-  }
-  .main .MYPLACE {
-	z-index: 999;
-	position: absolute;
-	bottom: 8px;
-	right: 16px;
-	width: 24px;
-	height: 24px;
-  }
-  </style>
+}
+.main .input_box:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: url('~@/assets/images/Search.png') no-repeat;
+  background-size: cover;
+}
+.main .input_box input {
+  padding-left: 48px;
+  box-shadow: 0px 0px 8px rgb(0 0 0 / 20%);
+}
+.main .TUNE {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  margin-right: 8px;
+}
+.main .filter {
+  overflow: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+  display: flex;
+}
+.main .filter::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.main .filter span,
+.filter button {
+  display: inline-block;
+  margin-right: 8px;
+}
+.main .filter button:last-child {
+  margin-right: 0;
+}
+.main button {
+  padding: 5px 12px;
+  border-width: 0px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  border-radius: 12px;
+  border-style: none;
+  cursor: pointer;
+  background: #ffffff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  transition: 0.5s;
+}
+.map_wrap {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw;
+}
+.main .MYPLACE {
+  z-index: 999;
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+}
+</style>
