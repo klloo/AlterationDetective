@@ -28,10 +28,7 @@ exports.config = (passport) => {
          userService.getUserByEmail(email).then((user) => {
             // email이 없는 경우
             if(isEmpty(user)) {
-                const result = new Result();
-                result.success = false;
-                result.message =  "가입되지 않은 회원입니다."
-                done(null, false, result); 
+                done(null, false, "가입되지 않은 회원입니다."); 
                 return;
             }
             const encodedPassword = user.password;
@@ -45,10 +42,7 @@ exports.config = (passport) => {
                     done(null, result);
                 } else {
                     // 비밀번호가 일치하지 않는 경우
-                const result = new Result();
-                result.success = false;
-                result.message =  "비밀번호가 틀렸습니다."
-                done(null, false, result); 
+                    done(null, false, "비밀번호가 틀렸습니다."); 
                 }
             });
         }).catch((err) => { done(err) });

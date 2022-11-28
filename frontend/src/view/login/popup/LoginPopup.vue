@@ -39,13 +39,14 @@
       <Password @home="Password = false"></Password>
     </div>
     <div v-if="JoinPopup === true">
-      <JoinPopup @home="JoinPopup = false"></JoinPopup>
+      <JoinPopup @home="JoinPopup = false" @open-login="JoinPopup = false"></JoinPopup>
     </div>
   </div>
 </template>
 
 <script>
 import '@/assets/css/Login.css';
+import { isEmpty } from 'lodash';
 import Password from './Password.vue';
 import JoinPopup from './JoinPopup.vue';
 import { login } from '@/api/user';
@@ -67,6 +68,14 @@ export default {
   },
   methods: {
     login() {
+      if (isEmpty(this.userEmail)) {
+        this.$notify('이메일을 입력해주세요.');
+        return;
+      }
+      if (isEmpty(this.password)) {
+        this.$notify('비밀번호를 입력해주세요.');
+        return;
+      }
       const loginInfo = {
         userEmail: this.userEmail,
         password: this.password,
@@ -79,7 +88,7 @@ export default {
             this.$store.dispatch('setUserInfo', userInfo);
             this.$router.push('/');
           } else {
-            this.$notify(data.data.user.message);
+            this.$notify(result.message);
           }
         })
         .catch((err) => {
