@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <router-view :class="viewName" />
-    <notifications position="top center" class="mt_32" />
   </div>
 </template>
 

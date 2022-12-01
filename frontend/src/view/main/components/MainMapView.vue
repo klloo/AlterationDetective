@@ -1,26 +1,35 @@
 <template>
   <div>
-    <div class="search_box pa_1">
-      <div class="input_box">
-        <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
-      </div>
-      <div class="d_flex align_center">
-        <span class="TUNE"></span>
-        <div class="filter py_1">
-          <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
-          <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
+    <alteraion-shop-detail-popup v-if="showDetailPopup" :shop-info="selectedShop" @back="showDetailPopup = false" />
+    <div v-else>
+      <div class="search_box pa_1">
+        <div class="input_box">
+          <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
+        </div>
+        <div class="d_flex align_center">
+          <span class="TUNE"></span>
+          <div class="filter py_1">
+            <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
+            <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
+          </div>
         </div>
       </div>
+      <div class="map_wrap">
+        <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
+          <naver-marker :lat="latitude" :lng="longitude" />
+          <naver-marker
+            v-for="(item, index) in altreationShopList"
+            :key="index"
+            :lat="item.latitude"
+            :lng="item.longitude"
+            @click="markerClick(item)"
+          ></naver-marker>
+        </naver-maps>
+        <span class="MYPLACE" @click="setCurrentPosition"></span>
+        <!-- <alteration-shop-list-swipe /> -->
+      </div>
+      <!-- <ModalViewM></ModalViewM> -->
     </div>
-    <div class="map_wrap">
-      <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
-        <naver-marker :lat="latitude" :lng="longitude" />
-        <naver-marker v-for="(item, index) in altreationShopList" :key="index" :lat="item.latitude" :lng="item.longitude"></naver-marker>
-      </naver-maps>
-      <span class="MYPLACE" @click="setCurrentPosition"></span>
-      <!-- <alteration-shop-list-swipe /> -->
-    </div>
-    <!-- <ModalViewM></ModalViewM> -->
   </div>
 </template>
 
@@ -28,14 +37,18 @@
 // import ModalViewM from '@/components/Layout/ModalSlideUp';
 import AlterationShopListSwipe from './AlterationShopListSwipe';
 import { getAlterationShopList } from '@/api/alteration-shop';
+import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
 
 export default {
   name: 'MainMap',
-  components: { AlterationShopListSwipe },
+  components: {
+    AlterationShopListSwipe,
+    AlteraionShopDetailPopup,
+  },
   data() {
-    // 기본 위치
-    const latitude = 37;
-    const longitude = 127;
+    // 기본 위치 (강남역)
+    const latitude = 37.493168;
+    const longitude = 127.030014;
     return {
       // 지도 관련 필드
       width: null,
@@ -58,6 +71,10 @@ export default {
       buttonList: ['추천 수선집', '교복', '어깨', '바지', '바지 기장', '소매 기장'],
       // 수선집 목록
       altreationShopList: [],
+      // 현재 클릭한 수선집 정보
+      selectedShop: {},
+      // 상세 팝업 오픈 여부
+      showDetailPopup: false,
     };
   },
   methods: {
@@ -73,7 +90,6 @@ export default {
           const result = data.data;
           if (result.success) {
             this.altreationShopList = result.data;
-            this.setShopMarker;
           }
         })
         .catch((err) => {
@@ -97,20 +113,18 @@ export default {
         });
       }
     },
-    setShopMarker() {
-      this.altreationShopList.forEach((item) => {
-        const marker = new naver.maps.Marker({
-          map: this.map,
-          title: item.alterationShopName,
-          position: new naver.maps.LatLng(item.latitude, item.longitude),
-        });
-      });
-    },
     /**
      * 버튼 클래스 반환
      */
     buttonClass(idx) {
       return this.selectedTab === idx ? 'blue' : '';
+    },
+    /**
+     * 마커 클릭 이벤트 핸들러
+     */
+    markerClick(item) {
+      this.selectedShop = item;
+      this.showDetailPopup = true;
     },
   },
 };

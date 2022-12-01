@@ -36,10 +36,10 @@
       </div>
     </div>
     <div v-if="Password === true">
-      <Password @home="Password = false"></Password>
+      <find-password-popup @home="Password = false"></find-password-popup>
     </div>
     <div v-if="JoinPopup === true">
-      <JoinPopup @home="JoinPopup = false" @open-login="JoinPopup = false"></JoinPopup>
+      <join-popup @home="JoinPopup = false"></join-popup>
     </div>
   </div>
 </template>
@@ -47,8 +47,8 @@
 <script>
 import '@/assets/css/Login.css';
 import { isEmpty } from 'lodash';
-import Password from './Password.vue';
-import JoinPopup from './JoinPopup.vue';
+import FindPasswordPopup from './FindPasswordPopup';
+import JoinPopup from './JoinPopup';
 import { login } from '@/api/user';
 
 export default {
@@ -56,7 +56,7 @@ export default {
   emits: ['home'],
   components: {
     JoinPopup,
-    Password,
+    FindPasswordPopup,
   },
   data() {
     return {
@@ -69,11 +69,11 @@ export default {
   methods: {
     login() {
       if (isEmpty(this.userEmail)) {
-        this.$notify('이메일을 입력해주세요.');
+        this.$toast.info('이메일을 입력해주세요.');
         return;
       }
       if (isEmpty(this.password)) {
-        this.$notify('비밀번호를 입력해주세요.');
+        this.$toast.info('비밀번호를 입력해주세요.');
         return;
       }
       const loginInfo = {
@@ -88,7 +88,7 @@ export default {
             this.$store.dispatch('setUserInfo', userInfo);
             this.$router.push('/');
           } else {
-            this.$notify(result.message);
+            this.$toast.error(result.message);
           }
         })
         .catch((err) => {

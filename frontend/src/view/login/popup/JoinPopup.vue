@@ -101,7 +101,7 @@
       <!-- 인증번호 입력 -->
       <validation-observer ref="authCodeForm">
         <form>
-          <validation-provider class="input_box" v-if="numberSend === true" rules="required|isCoincideAuthCode" v-slot="{ errors }">
+          <validation-provider class="input_box" v-if="numberSend === true" rules="required" v-slot="{ errors }">
             <input type="text" placeholder="인증번호 입력" v-model="authCodeInput" />
             <p class="error_msg">{{ errors[0] }}</p>
           </validation-provider>
@@ -121,7 +121,7 @@
         <div class="input_box">
           <input type="text" class="MAIL_GRAY check_ok" placeholder="name@email.com" v-model="formData.userEmail" disabled />
         </div>
-        <validation-provider class="input_box" rules="required" v-slot="{ errors }">
+        <validation-provider class="input_box" rules="required|validatePassword" v-slot="{ errors }">
           <input type="password" class="password" placeholder="비밀번호를 입력하세요" v-model="formData.password" />
           <p class="error_msg">{{ errors[0] }}</p>
         </validation-provider>
@@ -129,7 +129,7 @@
           <input type="password" class="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe" />
           <p class="error_msg">{{ errors[0] }}</p>
         </validation-provider>
-        <validation-provider class="input_box mb-40" rules="required" v-slot="{ errors }">
+        <validation-provider class="input_box mb-40" rules="required|validateUsername" v-slot="{ errors }">
           <input type="text" class="USER_ICON" placeholder="닉네임을 정해주세요." v-model="formData.username" />
           <p class="error_msg">{{ errors[0] }}</p>
         </validation-provider>
@@ -142,8 +142,8 @@
 <script>
 import { isNil } from 'lodash';
 import { sendAuthMail, registerUser, checkDuplicatedEmail } from '@/api/user';
+import { requiredRule, emailRule, validatePassword, validateUsername } from '@/utils/validation';
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
-import { required, email } from 'vee-validate/dist/rules';
 
 export default {
   name: 'JoinPopup',
@@ -152,23 +152,10 @@ export default {
     ValidationObserver,
   },
   data() {
-    extend('required', {
-      ...required,
-      message: '필수 항목입니다.',
-    });
-    extend('email', {
-      ...email,
-      message: '올바른 형식이 아닙니다.',
-    });
-    extend('isCoincideAuthCode', {
-      validate: (value) => {
-        if (!isNil(this.authCode) && !isNil(value)) {
-          return this.authCode.toString() === value.toString();
-        }
-        return false;
-      },
-      message: '인증번호가 일치하지 않습니다.',
-    });
+    extend('required', requiredRule);
+    extend('email', emailRule);
+    extend('validatePassword', validatePassword);
+    extend('validateUsername', validateUsername);
     extend('isCoincidePassword', {
       validate: (value) => {
         if (!isNil(this.formData.password) && !isNil(value)) {
@@ -227,7 +214,7 @@ export default {
             const result = data.data;
             if (result.success) {
               if (result.data) {
-                this.$notify('이미 가입된 이메일입니다.');
+                this.$toast.info('이미 가입된 이메일입니다.');
                 return;
               } else {
                 this.sendAuthMail();
@@ -243,12 +230,16 @@ export default {
      * 인증번호를 확인한다.
      */
     checkAuthCode() {
-      this.$refs.authCodeForm.validate().then((success) => {
-        if (!success) {
-          return;
-        }
-        this.joinPassword = true;
-      });
+      let isSame = false;
+      if (!isNil(this.authCode) && !isNil(this.authCodeInput)) {
+        isSame = this.authCode.toString() === this.authCodeInput.toString();
+      }
+      if (!isSame) {
+        this.$toast.error('인증번호가 일치하지 않습니다.');
+        return;
+      }
+      this.joinPassword = true;
+      this.$toast.success('인증이 완료되었습니다.');
     },
     /**
      * 회원 정보 폼 유효성을 확인한다.
@@ -266,25 +257,26 @@ export default {
      */
     sendAuthMail() {
       this.numberSend = true;
-      this.isLoading = true;
-      sendAuthMail({
-        email: this.formData.userEmail,
-      })
-        .then((data) => {
-          const result = data.data;
-          if (result.success) {
-            this.authCode = result.data;
-            if (this.authCode) {
-              this.numberSend = true;
-            }
-          } else {
-            this.$notify('인증메일 전송에 실패하였습니다');
-          }
-        })
-        .catch((err) => {
-          throw new Error(err);
-        })
-        .finally(() => (this.isLoading = false));
+      // this.isLoading = true;
+      // sendAuthMail({
+      //   email: this.formData.userEmail,
+      // })
+      //   .then((data) => {
+      //     const result = data.data;
+      //     if (result.success) {
+      //       this.authCode = result.data;
+      //       if (this.authCode) {
+      //         this.numberSend = true;
+      //       }
+      //       this.$toast.success('인증번호를 전송하였습니다.');
+      //     } else {
+      //       this.$toast.error('인증번호 전송에 실패하였습니다');
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     throw new Error(err);
+      //   })
+      //   .finally(() => (this.isLoading = false));
     },
     /**
      * 회원가입을 진행한다.
@@ -294,14 +286,14 @@ export default {
         .then((data) => {
           const result = data.data;
           if (result.success) {
-            this.$notify('회원가입이 완료되었습니다.');
-            this.$emit('open-login');
+            this.$toast.success('회원가입이 완료되었습니다.');
+            this.$emit('home');
           } else {
-            this.$notify('회원가입에 실패하였습니다.');
+            this.$toast.error('회원가입에 실패하였습니다.');
           }
         })
         .catch((err) => {
-          this.$notify('회원가입에 실패하였습니다.');
+          this.$toast.error('회원가입에 실패하였습니다.');
           throw new Error(err);
         });
     },

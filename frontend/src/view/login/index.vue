@@ -11,10 +11,10 @@
       </div>
     </div>
     <div v-if="mode === 'login'" class="px_1">
-      <LoginPopup @home="mode = 'none'"></LoginPopup>
+      <login-popup @home="mode = 'none'"></login-popup>
     </div>
     <div v-if="mode === 'join'" class="px_1">
-      <JoinPopup @home="mode = 'none'" @open-login="mode = 'login'"></JoinPopup>
+      <join-popup @home="mode = 'none'" @open-login="mode = 'login'"></join-popup>
     </div>
   </div>
 </template>
