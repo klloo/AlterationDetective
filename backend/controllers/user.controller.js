@@ -17,6 +17,16 @@ const userContorller = {
         res.status(200).send(result);
     },
     /**
+     * 사용자 정보를 수정한다.
+     */
+    updateUser: async (req, res) => {
+        const userInfo = req.body;
+        await UserService.updateUser(userInfo);
+        const result = new Result();
+        result.success = true;
+        res.status(200).send(result);
+    },
+    /**
      * 중복되는 이메일인지 여부를 조회한다. (true: 중복, false: 중복X)
      */
     checkDuplicatedEmail: async (req, res) => {

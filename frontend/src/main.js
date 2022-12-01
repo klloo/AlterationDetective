@@ -10,7 +10,8 @@ import VueGeolocation from 'vue-geolocation-api';
 import './permission';
 import '@/assets/css/reset.css';
 import '@/assets/css/common.css';
-import Notifications from 'vue-notification'
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
 
 Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
@@ -22,7 +23,15 @@ Vue.use(naver, {
 });
 
 Vue.use(VueGeolocation);
-Vue.use(Notifications);
+Vue.use(Toast, {
+  transition: 'Vue-Toastification__slide',
+  maxToasts: 20,
+  newestOnTop: false,
+  hideProgressBar: true,
+  timeout: 2000,
+  position: 'bottom-center',
+  toastClassName: 'custom-toast-class',
+});
 
 /* eslint-disable no-new */
 new Vue({

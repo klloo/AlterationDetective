@@ -6,6 +6,10 @@ export function registerUser(params) {
     return axios.post(`${PREFIX_URL}/register`, params);
 }
 
+export function updateUser(params) {
+    return axios.post(`${PREFIX_URL}/update`, params);
+}
+
 export function checkLogin() {
     return axios.get(`${PREFIX_URL}/check`);
 }

@@ -17,6 +17,15 @@ const userService = {
         });
     }),
     /**
+     * 사용자 정보를 수정한다.
+     */
+    updateUser: (userInfo) => new Promise ((resolve, reject) => {
+        const encryptedPassword = bcrypt.hashSync(userInfo.password, 10);
+        const params = [encryptedPassword, userInfo.userEmail];
+        // 쿼리 추가
+        resolve();
+    }),
+    /**
      * 이메일에 해당하는 사용자 정보를 조회한다.
      */
     getUserByEmail: (email) => new Promise ((resolve, reject) => {

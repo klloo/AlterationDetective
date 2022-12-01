@@ -201,3 +201,7 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
   height: 64px;
   background-color: #fff;
 }
+
+.Vue-Toastification__toast.custom-toast-class {
+	border-radius: 7px;
+}
