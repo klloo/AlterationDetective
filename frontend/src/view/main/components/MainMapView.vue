@@ -14,6 +14,7 @@
           </div>
         </div>
       </div>
+      <vue-loading class="spinner" v-show="isLoading" type="spin" color="black"></vue-loading>
       <div class="map_wrap">
         <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
           <naver-marker :lat="latitude" :lng="longitude" />
@@ -75,6 +76,8 @@ export default {
       selectedShop: {},
       // 상세 팝업 오픈 여부
       showDetailPopup: false,
+      // 로딩 중 여부
+      isLoading: false,
     };
   },
   methods: {
@@ -94,8 +97,10 @@ export default {
         })
         .catch((err) => {
           throw new Error(err);
+        })
+        .finally(() => {
+          this.setCurrentPosition();
         });
-      this.setCurrentPosition();
     },
     /**
      * 현재 위치를 설정한다.
@@ -103,6 +108,7 @@ export default {
      * @return  {[type]}  [return description]
      */
     setCurrentPosition() {
+      this.isLoading = true;
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((pos) => {
           // 마커 위치
@@ -110,6 +116,7 @@ export default {
           this.longitude = pos.coords.longitude;
           // 지도 위치
           this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
+          this.isLoading = false;
         });
       }
     },
@@ -206,5 +213,11 @@ export default {
   right: 16px;
   width: 24px;
   height: 24px;
+}
+.spinner {
+  z-index: 999;
+  position: absolute;
+  top: 100vw;
+  left: 50%;
 }
 </style>
