@@ -15,11 +15,15 @@
           </div>
         </li>
       </ul>
+      <!-- <ModalViewM>
+        sdsdf
+      </ModalViewM> -->
     </div>
   </div>
 </template>
 
 <script>
+// import ModalViewM from '../main/components/Layout/ModalSlideUp.vue';
 import MainMapView from './components/MainMapView';
 import AlterationShopView from './components/AlterationShopView';
 import FavoriteView from './components/FavoriteView.vue';
@@ -33,6 +37,7 @@ export default {
     FavoriteView,
     MyPageView,
     menuClickChange: 'gray',
+    // ModalViewM,
   },
   data() {
     return {
@@ -80,4 +85,8 @@ export default {
 <style scoped>
 .active {
   border-bottom: 2px solid #8AB2FF;
-}</style>
+}
+.tab_area {
+  z-index: 999;
+}
+</style>
