@@ -28,13 +28,16 @@
         <span class="MYPLACE" @click="setCurrentPosition"></span>
         <!-- <alteration-shop-list-swipe /> -->
       </div>
-      <!-- <ModalViewM></ModalViewM> -->
     </div>
+    <ModalViewM>
+        <Recommend></Recommend>
+    </ModalViewM>
   </div>
 </template>
 
 <script>
-// import ModalViewM from '@/components/Layout/ModalSlideUp';
+import Recommend from './Recommend.vue'
+import ModalViewM from '../components/Layout/ModalSlideUp.vue';
 import AlterationShopListSwipe from './AlterationShopListSwipe';
 import { getAlterationShopList } from '@/api/alteration-shop';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
@@ -44,6 +47,9 @@ export default {
   components: {
     AlterationShopListSwipe,
     AlteraionShopDetailPopup,
+    AlterationShopListSwipe,
+    ModalViewM,
+    Recommend,
   },
   data() {
     // 기본 위치 (강남역)
