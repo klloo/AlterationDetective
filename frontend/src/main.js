@@ -12,10 +12,13 @@ import '@/assets/css/reset.css';
 import '@/assets/css/common.css';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import VueLoading from 'vue-loading-template'
 
 Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
 Vue.config.productionTip = false;
+
+Vue.use(VueLoading);
 
 Vue.use(naver, {
   clientID: 'n9dm36idtu',
