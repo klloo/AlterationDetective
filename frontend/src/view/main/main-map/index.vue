@@ -27,28 +27,24 @@
           ></naver-marker>
         </naver-maps>
         <span class="MYPLACE" @click="setCurrentPosition"></span>
-        <!-- <alteration-shop-list-swipe /> -->
       </div>
     </div>
-    <ModalViewM>
-        <Recommend></Recommend>
-    </ModalViewM>
+    <modal-view-m>
+        <recommend></recommend>
+    </modal-view-m>
   </div>
 </template>
 
 <script>
-import Recommend from './Recommend.vue'
-import ModalViewM from '../components/Layout/ModalSlideUp.vue';
-import AlterationShopListSwipe from './AlterationShopListSwipe';
 import { getAlterationShopList } from '@/api/alteration-shop';
+import Recommend from './components/Recommend'
+import ModalViewM from '../layout/ModalSlideUp';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
 
 export default {
   name: 'MainMap',
   components: {
-    AlterationShopListSwipe,
     AlteraionShopDetailPopup,
-    AlterationShopListSwipe,
     ModalViewM,
     Recommend,
   },
@@ -123,7 +119,7 @@ export default {
           // 지도 위치
           this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
           this.isLoading = false;
-        });
+        })
       }
     },
     /**
