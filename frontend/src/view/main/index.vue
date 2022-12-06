@@ -1,33 +1,30 @@
 <template>
   <div>
-    <!-- <h1>메인 페이지</h1> -->
     <components :is="currentComponent" />
     <div>
       <ul class="tab_area">
-        <li v-for="(tab, index) in tabList"
-        :key="index" style="cursor:pointer"
-        @click="currentComponent = tab.component"
-        :class="{active: currentComponent === tab.component}"
+        <li
+          v-for="(tab, index) in tabList"
+          :key="index"
+          style="cursor:pointer"
+          @click="currentComponent = tab.component"
+          :class="{ active: currentComponent === tab.component }"
         >
           <div class="tab_item">
-            <img :src="tab.img2" alt="menu" v-if="currentComponent === tab.component"/>
+            <img :src="tab.img2" alt="menu" v-if="currentComponent === tab.component" />
             <img :src="tab.img" alt="menu" v-else />
           </div>
         </li>
       </ul>
-      <!-- <ModalViewM>
-        sdsdf
-      </ModalViewM> -->
     </div>
   </div>
 </template>
 
 <script>
-// import ModalViewM from '../main/components/Layout/ModalSlideUp.vue';
-import MainMapView from './components/MainMapView';
-import AlterationShopView from './components/AlterationShopView';
-import FavoriteView from './components/FavoriteView.vue';
-import MyPageView from './components/MyPageView.vue';
+import MainMapView from './main-map';
+import AlterationShopView from './alteration-shop';
+import FavoriteView from './favorite';
+import MyPageView from './my-page';
 
 export default {
   name: 'MainView',
@@ -37,7 +34,6 @@ export default {
     FavoriteView,
     MyPageView,
     menuClickChange: 'gray',
-    // ModalViewM,
   },
   data() {
     return {
@@ -76,15 +72,14 @@ export default {
     },
   },
   method: {
-    changeImg() {
-    },
+    changeImg() {},
   },
 };
 </script>
 
 <style scoped>
 .active {
-  border-bottom: 2px solid #8AB2FF;
+  border-bottom: 2px solid #8ab2ff;
 }
 .tab_area {
   z-index: 999;
