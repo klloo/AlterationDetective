@@ -64,7 +64,8 @@
     height: 15px;
 }
 .modal_scrollable {
-    overflow-y: auto;
+    height: 100%;
+    overflow: auto;
 }
 .modal_title_m {
     position: absolute;

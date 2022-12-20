@@ -1,67 +1,81 @@
 <template>
-  <!-- <div :class="['modal_m', addClass]"> -->
-  <!-- <div class="overlay_m"></div> -->
-  <div :class="modalClassList" :style="modalStyle">
-    <span class="height_handler" @click="closeModal" @animationend="this.$emit('closeModal')"></span>
+  <div ref="card" class="modal_card_m" :style="{ top: `${isMove ? y : calcY()}px` }">
+    <div ref="pan">
+      <span class="top_bar"></span>
+    </div>
     <div class="modal_header tal">
       <slot name="title"></slot>
-      <span class="modal_close" @click="closeModal"></span>
+      <span class="modal_close"></span>
     </div>
-    <div class="modal_scrollable" :style="modalScrollableStyle">
-      <slot />
+    <div class="modal_scrollable">
+      <slot name="close" v-if="this.state === 'close'" />
+      <slot name="open" v-if="this.state === 'open'" />
     </div>
   </div>
-  <!-- </div> -->
 </template>
 
 <script>
-import { remove } from 'lodash';
+import Hammer from 'hammerjs';
 import '@/assets/css/modal.m.css';
 
 export default {
   name: 'ModalView.m',
-  props: {
-    addClass: {
-      type: String,
-      default: '',
-    },
-  },
   data() {
     return {
-      modalStyle: {},
-      modalScrollableStyle: {},
-      modalClassList: ['modal_card_m'],
+      mc: null,
+      y: 0,
+      startY: 0,
+      isMove: false,
+      state: 'close',
     };
   },
   mounted() {
-    const height = window.innerHeight * 0.9;
-    this.modalStyle = {
-      maxHeight: `${height}px`,
-    };
-    this.modalScrollableStyle = {
-      maxHeight: `${height * 0.9 - 50}px`,
-    };
-    this.modalClassList.push('slide-up');
-    document.body.classList.add('overflow_h');
+    this.mc = new Hammer(this.$refs.pan);
+    this.mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+    this.mc.on('panup pandown', (evt) => {
+      this.y = evt.center.y - 16;
+    });
+
+    this.mc.on('panstart', (evt) => {
+      this.startY = evt.center.y;
+      this.isMove = true;
+    });
+
+    this.mc.on('panend', (evt) => {
+      this.isMove = false;
+      if (this.startY - evt.center.y > 120) {
+        this.state = 'open';
+      }
+      if (this.startY - evt.center.y < 0) {
+        this.state = 'close';
+      }
+    });
   },
-  beforeUnmount() {
-    document.body.classList.remove('overflow_h');
+  beforeDestroy() {
+    this.mc.destroy();
   },
   methods: {
-    closeModal() {
-      remove(this.modalClassList, (item) => item === 'slide-up');
-      this.modalClassList.push('slide-down');
+    calcY() {
+      switch (this.state) {
+        // 닫은 상태 일 때 높이
+        case 'close':
+          return window.innerHeight * 0.8;
+        // 연 상태 일 때 높이
+        case 'open':
+          return window.innerHeight * 0.2;
+        default:
+          return this.y;
+      }
     },
   },
 };
 </script>
 <style scoped>
-.height_handler {
+.top_bar {
   height: 3px;
   width: 56px;
   background: #000;
   display: inline-block;
-}
-.modal_close {
 }
 </style>

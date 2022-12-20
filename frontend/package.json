@@ -15,6 +15,7 @@
     "axios": "^1.1.3",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
+    "hammerjs": "^2.0.8",
     "vee-validate": "^3.4.14",
     "vue": "^2.5.2",
     "vue-button-spinner": "^2.2.1",
@@ -24,6 +25,8 @@
     "vue-naver-maps": "^0.14.3",
     "vue-notification": "^1.3.20",
     "vue-router": "^3.0.1",
+    "vue-slider-component": "^3.2.24",
+    "vue-swipeable-bottom-sheet": "^0.0.5",
     "vue-toastification": "^1.7.14",
     "vuex": "^4.1.0"
   },

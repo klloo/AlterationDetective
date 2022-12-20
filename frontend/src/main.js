@@ -13,12 +13,15 @@ import '@/assets/css/common.css';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import VueLoading from 'vue-loading-template'
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
 
 Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
 Vue.config.productionTip = false;
 
 Vue.use(VueLoading);
+Vue.component('VueSlider', VueSlider)
 
 Vue.use(naver, {
   clientID: 'n9dm36idtu',

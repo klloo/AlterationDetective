@@ -1,19 +1,24 @@
 <template>
   <div>
-    <alteraion-shop-detail-popup v-if="showDetailPopup" :shop-info="selectedShop" @back="showDetailPopup = false" />
-    <div v-else>
+    <alteraion-shop-detail-popup v-show="showDetailPopup" :alteration-shop-id="selectedShopId" @back="showDetailPopup = false" />
+    <div v-show="!showDetailPopup">
       <div class="search_box pa_1">
         <div class="input_box">
           <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
         </div>
         <div class="d_flex align_center">
-          <span class="TUNE"></span>
+          <span class="TUNE" @click="showDistanceTune = !showDistanceTune"></span>
           <div class="filter py_1">
             <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
-            <button v-for="(btn, index) in buttonList" :key="index" :class="buttonClass(index)" @click="selectedTab = index">{{ btn }}</button>
+            <button v-for="tag in tagList" :key="tag.tagId" :class="buttonClass(tag.tagId)" @click="selectedTagBtn = tag.tagId">
+              {{ tag.tagName }}
+            </button>
           </div>
         </div>
+        <!-- 거리 조정 슬라이더 -->
+        <distance-tune v-show="showDistanceTune" @change-value="changeDistance"></distance-tune>
       </div>
+      <!-- 지도 -->
       <vue-loading class="spinner" v-show="isLoading" type="spin" color="black"></vue-loading>
       <div class="map_wrap">
         <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
@@ -28,16 +33,29 @@
         </naver-maps>
         <span class="MYPLACE" @click="setCurrentPosition"></span>
       </div>
+      <!-- 수선집 목록 모달 -->
+      <modal-view-m>
+        <template v-slot:open>
+          <recommend :address="addressString" :alteration-shop-list="altreationShopList" @click-shop="markerClick"></recommend>
+        </template>
+        <template v-slot:close>
+          <span class="shop_count">
+            <span style="font-weight: bold">
+              {{ altreationShopList.length }}
+            </span>
+            개의 수선집 목록 보기
+          </span>
+        </template>
+      </modal-view-m>
     </div>
-    <modal-view-m>
-        <recommend></recommend>
-    </modal-view-m>
   </div>
 </template>
 
 <script>
-import { getAlterationShopList } from '@/api/alteration-shop';
-import Recommend from './components/Recommend'
+import axios from 'axios';
+import { getAlterationShopList, getTagList } from '@/api/alteration-shop';
+import Recommend from './components/Recommend';
+import DistanceTune from './components/DistanceTune';
 import ModalViewM from '../layout/ModalSlideUp';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
 
@@ -47,6 +65,7 @@ export default {
     AlteraionShopDetailPopup,
     ModalViewM,
     Recommend,
+    DistanceTune,
   },
   data() {
     // 기본 위치 (강남역)
@@ -62,7 +81,7 @@ export default {
       mapOptions: {
         lat: latitude,
         lng: longitude,
-        zoom: 18,
+        zoom: 15,
         zoomControl: false,
         mapTypeControl: false,
         mapDataControl: false,
@@ -70,16 +89,22 @@ export default {
       },
       initLayers: ['BACKGROUND', 'BACKGROUND_DETAIL', 'POI_KOREAN', 'TRANSIT', 'ENGLISH', 'CHINESE', 'JAPANESE'],
       // 상단 버튼 관련 필드
-      selectedTab: 0,
-      buttonList: ['추천 수선집', '교복', '어깨', '바지', '바지 기장', '소매 기장'],
+      selectedTagBtn: 0,
+      tagList: [],
       // 수선집 목록
       altreationShopList: [],
-      // 현재 클릭한 수선집 정보
-      selectedShop: {},
+      // 현재 클릭한 수선집 id
+      selectedShopId: -1,
       // 상세 팝업 오픈 여부
       showDetailPopup: false,
       // 로딩 중 여부
       isLoading: false,
+      // 거리 조정 컴포넌트 제공 여부
+      showDistanceTune: false,
+      // 설정한 거리
+      distance: 2,
+      // 현위치 행정동 주소
+      addressString: '',
     };
   },
   methods: {
@@ -89,7 +114,15 @@ export default {
      */
     onLoad(map) {
       this.map = map;
+      // 태그 목록 조회
+      this.loadTagList();
       // 수선집 목록 조회
+      this.loadAlterationShopList();
+    },
+    /**
+     * 수선집 목록을 조회한다.
+     */
+    loadAlterationShopList() {
       getAlterationShopList()
         .then((data) => {
           const result = data.data;
@@ -102,6 +135,21 @@ export default {
         })
         .finally(() => {
           this.setCurrentPosition();
+        });
+    },
+    /**
+     * 태그 목록을 조회한다.
+     */
+    loadTagList() {
+      getTagList()
+        .then((data) => {
+          const result = data.data;
+          if (result.success) {
+            this.tagList = result.data;
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
         });
     },
     /**
@@ -119,21 +167,56 @@ export default {
           // 지도 위치
           this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
           this.isLoading = false;
-        })
+          // 좌표 -> 주소 변환
+          axios
+            .get('/naver/map-reversegeocode/v2/gc', {
+              headers: {
+                'X-NCP-APIGW-API-KEY-ID': 'n9dm36idtu',
+                'X-NCP-APIGW-API-KEY': 'CqEzG5y5swiaYpXOX1Yo7dgdvMlAdlwAGjfwBwiq',
+              },
+              params: {
+                coords: `${this.longitude},${this.latitude}`,
+                // coords: '128.196087,37.1343799',
+                // coords: '127.459223,36.6283933',
+                // coords: '127.344345,36.3696542',
+                output: 'json',
+                orders: 'admcode',
+              },
+            })
+            .then((res) => {
+              const data = res.data;
+              if (data.status.code === 0) {
+                const region = res.data.results[0].region;
+                this.addressString = `${region.area2.name} ${region.area3.name}`;
+              }
+            })
+            .catch((err) => {
+              throw new Error(err);
+            });
+        });
       }
     },
     /**
      * 버튼 클래스 반환
      */
     buttonClass(idx) {
-      return this.selectedTab === idx ? 'blue' : '';
+      return this.selectedTagBtn === idx ? 'blue' : '';
     },
     /**
      * 마커 클릭 이벤트 핸들러
      */
     markerClick(item) {
-      this.selectedShop = item;
+      this.selectedShopId = item.alterationShopId;
       this.showDetailPopup = true;
+    },
+    /**
+     * 설정한 거리 변경 핸들러
+     */
+    changeDistance(value) {
+      this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
+      this.distance = value;
+      this.mapOptions.zoom = 16 - Math.floor(this.distance * 0.5);
+      this.map.setOptions(this.mapOptions);
     },
   },
 };
