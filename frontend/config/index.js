@@ -17,6 +17,13 @@ module.exports = {
           '^/api': '',
         },
       },
+      '/naver': {
+        target: 'https://naveropenapi.apigw.ntruss.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/naver': '',
+        },
+      }
     },
 
     // Various Dev Server settings

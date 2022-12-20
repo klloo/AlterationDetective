@@ -12,8 +12,8 @@
       <!-- 로그인 input -->
       <p class="title">Login</p>
       <div class="input_box">
-        <input type="text" class="mail" placeholder="name@email.com" v-model="userEmail" />
-        <input type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
+        <input @keyup.enter="login" type="text" class="mail" placeholder="name@email.com" v-model="userEmail" />
+        <input @keyup.enter="login" type="password" class="password" placeholder="비밀번호를 입력하세요." v-model="password" />
       </div>
       <!-- 자동로그인 -->
       <label class="checkbox mb_40">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <components :is="currentComponent" />
+    <components :is="currentComponent" ref="currentView" />
     <div>
       <ul class="tab_area">
         <li
@@ -69,6 +69,15 @@ export default {
   computed: {
     loginUser() {
       return this.$store.getters.userInfo;
+    },
+  },
+  watch: {
+    currentComponent() {
+      this.$nextTick(() => {
+        if (this.$refs.currentView.loadData) {
+          this.$refs.currentView.loadData();
+        }
+      });
     },
   },
   method: {

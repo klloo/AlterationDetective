@@ -1,24 +1,65 @@
 <template>
   <div>
     <div class="mb_32 d_flex align_center mb_32">
-      <span class="BACKARR mr_16" @click="$emit('back')"></span>
+      <span class="BACKARR mr_16" @click="closePopup"></span>
       <span class="fw_400 fs_20">{{ shopInfo.alterationShopName }}</span>
     </div>
     <div>{{ shopInfo.address }}</div>
     <div>{{ shopInfo.phoneNumber }}</div>
+    <div>{{ shopInfo.starRate }}</div>
+    <div>
+      <span v-for="tag in shopInfo.tagList" :key="tag.tagId"> #{{ tag.tagName }} </span>
+    </div>
   </div>
 </template>
 <script>
+import { getAlterationShopDetail } from '@/api/alteration-shop';
+
 export default {
   name: 'AlterationShopDetailPopup',
   props: {
-    shopInfo: {
-      type: Object,
-      default: () => {},
+    alterationShopId: {
+      type: Number,
+      required: true,
     },
   },
   data() {
-    return {};
+    return {
+      shopInfo: {},
+    };
+  },
+  watch: {
+    alterationShopId: {
+      handler(value) {
+        if (value > 0) {
+          this.loadData();
+        }
+      },
+    },
+  },
+  methods: {
+    /**
+     * 수선집 상세 정보를 조회한다.
+     */
+    loadData() {
+      getAlterationShopDetail(this.alterationShopId)
+        .then((data) => {
+          const result = data.data;
+          if (result.success) {
+            this.shopInfo = result.data;
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    },
+    /**
+     * 팝업을 닫는다.
+     */
+    closePopup() {
+      this.shopInfo = {};
+      this.$emit('back');
+    },
   },
 };
 </script>
