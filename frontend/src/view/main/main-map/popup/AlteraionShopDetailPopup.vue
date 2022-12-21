@@ -22,6 +22,14 @@ export default {
       type: Number,
       required: true,
     },
+    longitude: {
+      type: Number,
+      default: 127,
+    },
+    latitude: {
+      type: Number,
+      default: 37,
+    },
   },
   data() {
     return {
@@ -42,7 +50,12 @@ export default {
      * 수선집 상세 정보를 조회한다.
      */
     loadData() {
-      getAlterationShopDetail(this.alterationShopId)
+      const params = {
+        longitude: this.longitude,
+        latitude: this.latitude,
+        alterationShopId: this.alterationShopId,
+      };
+      getAlterationShopDetail(params)
         .then((data) => {
           const result = data.data;
           if (result.success) {

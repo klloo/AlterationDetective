@@ -24,8 +24,7 @@
             <span> {{ shop.reviewCount }}</span>
           </div>
           <div class="recommend_info">
-            <span>230</span>
-            <span>m</span>
+            <span>{{ distFormatter(shop.dist) }}</span>
           </div>
         </div>
         <div class="mb_8 d_flex align_center justify_between">
@@ -39,6 +38,7 @@
 <script>
 import { find } from 'lodash';
 import { toggleShopLike } from '@/api/alteration-shop';
+import { distFormatter } from '@/utils/formatter';
 
 export default {
   name: 'Recommend',
@@ -56,6 +56,7 @@ export default {
     return {};
   },
   methods: {
+    distFormatter,
     toggleLike(alterationShopId) {
       const targetShop = find(this.alterationShopList, (item) => {
         if (item.alterationShopId === alterationShopId) return item;

@@ -6,6 +6,7 @@ const AlterationShopQuery = {
 			address,
 			latitude,
 			longitude,
+			ST_DISTANCE_SPHERE(POINT(?, ?), location) AS dist,
 			phone_number as phoneNumber,
 			IFNULL(AVG(r.star_rate),0) as starRate,
 			COUNT(DISTINCT r.review_id) as reviewCount,
@@ -25,6 +26,8 @@ const AlterationShopQuery = {
 			AND ul.user_id = ?
 		GROUP BY
 			alterationShopId
+		ORDER BY 
+			dist
 	`,
     selectAlterationShopDetailInfo: `
 		SELECT
@@ -32,10 +35,12 @@ const AlterationShopQuery = {
 			address,
 			latitude,
 			longitude,
+			ST_DISTANCE_SPHERE(POINT(?, ?), location) AS dist,
 			phone_number as phoneNumber,
 			review.starRate,
 			review.reviewCount,
 			review.likeCount,
+			IF(ul.user_id is null, false, true) as likeFlag,
 			tag.tag_id as tagId,
 			tag.tag_name as tagName
 		FROM
@@ -62,6 +67,10 @@ const AlterationShopQuery = {
 		LEFT JOIN 
 			tag 
 			ON m.tag_id = tag.tag_id
+		LEFT JOIN 
+			shop_like ul
+			ON ul.alteration_shop_id = a.alteration_shop_id
+			AND ul.user_id = ?
 		WHERE 
 			a.alteration_shop_id = ?
 	`,

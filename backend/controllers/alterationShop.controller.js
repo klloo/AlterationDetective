@@ -19,8 +19,12 @@ const alterationShopContorller = {
         const result = new Result();
         result.success = false;
         if(req.isAuthenticated() && req.user) {
-            const userId = req.user.userEmail;
-            const data = await AlterationShopService.getAlterationShopList(userId);
+            const params = {
+                userId: req.user.userEmail,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+            };
+            const data = await AlterationShopService.getAlterationShopList(params);
             result.success = true;
             result.data = data;
         }
@@ -30,11 +34,19 @@ const alterationShopContorller = {
      * 수선집 상세정보를 조회한다.
      */
      getAlterationShopDetail: async (req, res) => {
-        const alterationShopId = req.query.alterationShopId;
-        const data = await AlterationShopService.getAlterationShopDetail(alterationShopId);
         const result = new Result();
-        result.success = true;
-        result.data = data;
+        result.success = false;
+        if(req.isAuthenticated() && req.user) {
+            const params = {
+                alterationShopId: req.body.alterationShopId,
+                userId: req.user.userEmail,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+            };
+            const data = await AlterationShopService.getAlterationShopDetail(params);
+            result.success = true;
+            result.data = data;
+        }
         res.send(result);
     },
     /**
