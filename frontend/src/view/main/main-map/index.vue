@@ -1,6 +1,12 @@
 <template>
   <div>
-    <alteraion-shop-detail-popup v-show="showDetailPopup" :alteration-shop-id="selectedShopId" @back="showDetailPopup = false" />
+    <alteraion-shop-detail-popup
+      v-show="showDetailPopup"
+      :alteration-shop-id="selectedShopId"
+      :latitude="latitude"
+      :longitude="longitude"
+      @back="showDetailPopup = false"
+    />
     <div v-show="!showDetailPopup">
       <div class="search_box pa_1">
         <div class="input_box">
@@ -116,14 +122,18 @@ export default {
       this.map = map;
       // 태그 목록 조회
       this.loadTagList();
-      // 수선집 목록 조회
-      this.loadAlterationShopList();
+      // 현 위치 설정
+      this.setCurrentPosition();
     },
     /**
      * 수선집 목록을 조회한다.
      */
     loadAlterationShopList() {
-      getAlterationShopList()
+      const params = {
+        longitude: this.longitude,
+        latitude: this.latitude,
+      };
+      getAlterationShopList(params)
         .then((data) => {
           const result = data.data;
           if (result.success) {
@@ -132,9 +142,6 @@ export default {
         })
         .catch((err) => {
           throw new Error(err);
-        })
-        .finally(() => {
-          this.setCurrentPosition();
         });
     },
     /**
@@ -153,48 +160,70 @@ export default {
         });
     },
     /**
+     * 현재 위치를 가져온다.
+     */
+    getCurrentPosition() {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+    },
+    /**
      * 현재 위치를 설정한다.
      *
      * @return  {[type]}  [return description]
      */
     setCurrentPosition() {
-      this.isLoading = true;
       if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition((pos) => {
-          // 마커 위치
-          this.latitude = pos.coords.latitude;
-          this.longitude = pos.coords.longitude;
-          // 지도 위치
-          this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
-          this.isLoading = false;
-          // 좌표 -> 주소 변환
-          axios
-            .get('/naver/map-reversegeocode/v2/gc', {
-              headers: {
-                'X-NCP-APIGW-API-KEY-ID': 'n9dm36idtu',
-                'X-NCP-APIGW-API-KEY': 'CqEzG5y5swiaYpXOX1Yo7dgdvMlAdlwAGjfwBwiq',
-              },
-              params: {
-                coords: `${this.longitude},${this.latitude}`,
-                // coords: '128.196087,37.1343799',
-                // coords: '127.459223,36.6283933',
-                // coords: '127.344345,36.3696542',
-                output: 'json',
-                orders: 'admcode',
-              },
-            })
-            .then((res) => {
-              const data = res.data;
-              if (data.status.code === 0) {
-                const region = res.data.results[0].region;
-                this.addressString = `${region.area2.name} ${region.area3.name}`;
-              }
-            })
-            .catch((err) => {
-              throw new Error(err);
-            });
-        });
+        this.isLoading = true;
+        this.getCurrentPosition()
+          .then((pos) => {
+            // 마커 위치
+            this.latitude = pos.coords.latitude;
+            this.longitude = pos.coords.longitude;
+            // 지도 위치
+            this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
+          })
+          .catch((err) => {
+            throw new Error(err);
+          })
+          .finally(() => {
+            this.isLoading = false;
+            // 좌표 -> 주소 변환
+            this.coordsToAddres();
+            // 수선집 목록 조회
+            this.loadAlterationShopList();
+          });
       }
+    },
+    /**
+     * 좌표를 주소로 변환한다.
+     */
+    coordsToAddres() {
+      axios
+        .get('/naver/map-reversegeocode/v2/gc', {
+          headers: {
+            'X-NCP-APIGW-API-KEY-ID': 'n9dm36idtu',
+            'X-NCP-APIGW-API-KEY': 'CqEzG5y5swiaYpXOX1Yo7dgdvMlAdlwAGjfwBwiq',
+          },
+          params: {
+            coords: `${this.longitude},${this.latitude}`,
+            // coords: '128.196087,37.1343799',
+            // coords: '127.459223,36.6283933',
+            // coords: '127.344345,36.3696542',
+            output: 'json',
+            orders: 'admcode',
+          },
+        })
+        .then((res) => {
+          const data = res.data;
+          if (data.status.code === 0) {
+            const region = res.data.results[0].region;
+            this.addressString = `${region.area2.name} ${region.area3.name}`;
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     },
     /**
      * 버튼 클래스 반환

@@ -4,8 +4,8 @@ const AlterationShopController = require('../controllers/alterationShop.controll
 const wrapAsyncController = require('../controllers/wrapAsync.controller');
 
 router.get('/get-tag-list', wrapAsyncController(AlterationShopController.getTagList));
-router.get('/get-alteration-shop-list', wrapAsyncController(AlterationShopController.getAlterationShopList));
-router.get('/get-alteration-shop-detail', wrapAsyncController(AlterationShopController.getAlterationShopDetail));
+router.post('/get-alteration-shop-list', wrapAsyncController(AlterationShopController.getAlterationShopList));
+router.post('/get-alteration-shop-detail', wrapAsyncController(AlterationShopController.getAlterationShopDetail));
 router.post('/toggle-shop-like', wrapAsyncController(AlterationShopController.toggleShopLike));
 
 module.exports = router

@@ -6,16 +6,12 @@ export function getTagList() {
     return axios.get(`${PREFIX_URL}/get-tag-list`);
 }
 
-export function getAlterationShopList() {
-    return axios.get(`${PREFIX_URL}/get-alteration-shop-list`);
+export function getAlterationShopList(params) {
+    return axios.post(`${PREFIX_URL}/get-alteration-shop-list`,params);
 }
 
-export function getAlterationShopDetail(alterationShopId) {
-    return axios.get(`${PREFIX_URL}/get-alteration-shop-detail`,{
-        params: {
-            alterationShopId,
-        },
-    });
+export function getAlterationShopDetail(params) {
+    return axios.post(`${PREFIX_URL}/get-alteration-shop-detail`,params);
 }
 
 export function toggleShopLike(params) {

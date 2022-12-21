@@ -17,8 +17,9 @@ const shopService = {
     /**
      * 수선집 목록을 조회한다.
      */
-    getAlterationShopList: (userId) => new Promise ((resolve, reject) => {
-        connection.query(AlterationShopQuery.selectAlterationShopList, userId, (error, data) => {
+    getAlterationShopList: (params) => new Promise ((resolve, reject) => {
+        const queryParams = [params.longitude, params.latitude, params.userId];
+        connection.query(AlterationShopQuery.selectAlterationShopList, queryParams, (error, data) => {
             if (error) {
                 reject(error);
             }
@@ -28,8 +29,9 @@ const shopService = {
     /**
      * 수선집 상세 정보를 조회한다.
      */
-    getAlterationShopDetail: (alterationShopId) => new Promise ((resolve, reject) => {
-        connection.query(AlterationShopQuery.selectAlterationShopDetailInfo, alterationShopId, (error, data) => {
+    getAlterationShopDetail: (params) => new Promise ((resolve, reject) => {
+        const queryParams = [params.longitude, params.latitude, params.userId, params.alterationShopId];
+        connection.query(AlterationShopQuery.selectAlterationShopDetailInfo, queryParams, (error, data) => {
             if (error) {
                 reject(error);
             }
