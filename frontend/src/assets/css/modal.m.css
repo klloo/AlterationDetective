@@ -67,6 +67,9 @@
     height: 100%;
     overflow: auto;
 }
+.modal_scrollable::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
 .modal_title_m {
     position: absolute;
     top: 20px;

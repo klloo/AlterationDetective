@@ -1,5 +1,4 @@
 const connection = require('../database/connect');
-const UserQuery = require('../queries/user.query');
 const bcrypt = require('bcrypt');
 
 const userService = {
@@ -8,12 +7,17 @@ const userService = {
      */
     registerUser: (userInfo) => new Promise ((resolve, reject) => {
         const encryptedPassword = bcrypt.hashSync(userInfo.password, 10);
-        const params = [userInfo.userEmail, userInfo.username, encryptedPassword];
-        connection.query(UserQuery.insertUser, params, (error) => {
-            if (error) {
-                reject(error);
-            }
+        const params = {
+            user_email: userInfo.userEmail,
+            username: userInfo.username,
+            password: encryptedPassword
+        };
+        connection('user').insert(params)
+        .then(() => {
             resolve();
+        })
+        .catch((e) => {
+            reject(e);
         });
     }),
     /**
@@ -29,22 +33,28 @@ const userService = {
      * 이메일에 해당하는 사용자 정보를 조회한다.
      */
     getUserByEmail: (email) => new Promise ((resolve, reject) => {
-        connection.query(UserQuery.selectUserByEmail, email, (error, data) => {
-            if (error) {
-                reject(error);
-            }
+        connection('user')
+        .select('user_email AS userEmail', 'username', 'password', 'address', 'latitude', 'longitude')
+        .where('user_email', email)
+        .then((data) => {
             resolve(data[0]);
+        })
+        .catch((e) => {
+            reject(e);
         });
     }),
     /**
      * 중복되는 이메일인지 여부를 조회한다. (true: 중복, false: 중복X)
      */
     checkDuplicatedEmail: (email) => new Promise ((resolve, reject) => {
-        connection.query(UserQuery.selectCountUserByEmail, email, (error, count) => {
-            if (error) {
-                reject(error);
-            }
-            resolve(count[0].count > 0);
+        connection('user')
+        .count('* as count')
+        .where('user_email', email)
+        .then((data) => {
+            resolve(data[0].count > 0);
+        })
+        .catch((e) => {
+            reject(e);
         });
     }),
 };     

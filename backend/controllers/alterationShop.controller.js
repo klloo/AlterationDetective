@@ -17,12 +17,12 @@ const alterationShopContorller = {
      */
     getAlterationShopList: async (req, res) => {
         const result = new Result();
-        result.success = false;
         if(req.isAuthenticated() && req.user) {
             const params = {
                 userId: req.user.userEmail,
                 latitude: req.body.latitude,
                 longitude: req.body.longitude,
+                distance: req.body.distance,
             };
             const data = await AlterationShopService.getAlterationShopList(params);
             result.success = true;
@@ -35,7 +35,6 @@ const alterationShopContorller = {
      */
      getAlterationShopDetail: async (req, res) => {
         const result = new Result();
-        result.success = false;
         if(req.isAuthenticated() && req.user) {
             const params = {
                 alterationShopId: req.body.alterationShopId,

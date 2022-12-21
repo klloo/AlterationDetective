@@ -132,6 +132,7 @@ export default {
       const params = {
         longitude: this.longitude,
         latitude: this.latitude,
+        distance: this.distance * 1000,
       };
       getAlterationShopList(params)
         .then((data) => {
@@ -246,6 +247,7 @@ export default {
       this.distance = value;
       this.mapOptions.zoom = 16 - Math.floor(this.distance * 0.5);
       this.map.setOptions(this.mapOptions);
+      this.loadAlterationShopList();
     },
   },
 };
