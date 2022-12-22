@@ -7,11 +7,12 @@ const shopService = {
      * 수선집 태그 목록을 조회한다.
      */
     getTagList: () => new Promise ((resolve, reject) => {
-        connection.query(AlterationShopQuery.selectTagList, (error, data) => {
-            if (error) {
-                reject(error);
-            }
+        connection('tag')
+        .select('tag_id AS tagId', 'tag_name AS tagName')
+        .then((data) => {
             resolve(data);
+        }).catch((err) => {
+            reject(err);
         });
     }),
     /**
@@ -19,11 +20,14 @@ const shopService = {
      */
     getAlterationShopList: (params) => new Promise ((resolve, reject) => {
         const queryParams = [params.longitude, params.latitude, params.userId];
-        connection.query(AlterationShopQuery.selectAlterationShopList, queryParams, (error, data) => {
-            if (error) {
-                reject(error);
-            }
+        const subQuery = connection.raw(`(${AlterationShopQuery.selectAlterationShopList}) shop`, queryParams);
+        connection(subQuery)
+        .select('*')
+        .where('dist', '<' , params.distance)
+        .then((data) => {
             resolve(data);
+        }).catch((err) => {
+            reject(err);
         });
     }),
     /**
@@ -31,13 +35,11 @@ const shopService = {
      */
     getAlterationShopDetail: (params) => new Promise ((resolve, reject) => {
         const queryParams = [params.longitude, params.latitude, params.userId, params.alterationShopId];
-        connection.query(AlterationShopQuery.selectAlterationShopDetailInfo, queryParams, (error, data) => {
-            if (error) {
-                reject(error);
-            }
-            const result = cloneDeep(data[0]);
+        connection.raw(AlterationShopQuery.selectAlterationShopDetailInfo, queryParams)
+        .then((data) => {
+            const result = cloneDeep(data[0][0]);
             const tagList = [];
-            data.forEach(item => {
+            data[0].forEach(item => {
                 if(!isNil(item.tagId)) {
                     tagList.push({
                         tagId: item.tagId,
@@ -49,35 +51,48 @@ const shopService = {
                 result.tagList = tagList;
             }
             resolve(result);
+        })
+        .catch((err) => {
+            reject(err);
         });
     }),
     /**
      * 수선집 좋아요를 추가/삭제 한다.
      */
     toggleShopLike: (alterationShopId, userId) => new Promise ((resolve, reject) => {
-        const params = [alterationShopId, userId];
-        connection.query(AlterationShopQuery.selectLikeCount, params, (error, data) => {
-            if (error) {
-                reject(error);
-            }
+        const params = { 
+            alteration_shop_id: alterationShopId,
+            user_id: userId,
+        };
+        connection('shop_like')
+        .count('* as count')
+        .where('user_id', userId)
+        .andWhere('alteration_shop_id', alterationShopId)
+        .then((data) => {
             const count = data[0].count;
             // 좋아요가 존재하므로 delete
             if (count > 0) {
-                connection.query(AlterationShopQuery.deleteLike, params, (error) => {
-                    if (error) {
-                      reject(error);
-                    }
-                    resolve(false);
-              }); 
+                connection('shop_like')
+                .delete(params)
+                .then(() => {
+                    resolve();
+                })
+                .catch((e) => {
+                    reject(e);
+                });
             } else if(count <= 0) {
                 // 좋아요가 존재하지 않으므로 insert
-                connection.query(AlterationShopQuery.insertLike, params, (error) => {
-                    if (error) {
-                        reject(error);
-                    }
-                    resolve(true);
+                connection('shop_like')
+                .insert(params)
+                .then(() => {
+                    resolve();
+                })
+                .catch((e) => {
+                    reject(e);
                 });
             }
+        }).catch((err) => {
+            reject(err);
         });
     }),
 };     

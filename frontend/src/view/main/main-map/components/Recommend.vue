@@ -7,7 +7,8 @@
         <br />
         수선집을 추천하고 있어요!
       </p>
-      <p class="mb_8">추천수선집</p>
+      <p class="mb_8">추천 수선집</p>
+      <div v-if="isEmpty(alterationShopList)">추천 수선집이 없어요</div>
       <div v-for="(shop, index) in alterationShopList" :key="index" class="mb_32" @click="$emit('click-shop', shop)">
         <span class="RECOMMEND"></span>
         <p class="mb_8 fw_600">
@@ -36,7 +37,7 @@
   </ul>
 </template>
 <script>
-import { find } from 'lodash';
+import { find, isEmpty } from 'lodash';
 import { toggleShopLike } from '@/api/alteration-shop';
 import { distFormatter } from '@/utils/formatter';
 
@@ -56,6 +57,7 @@ export default {
     return {};
   },
   methods: {
+    isEmpty,
     distFormatter,
     toggleLike(alterationShopId) {
       const targetShop = find(this.alterationShopList, (item) => {

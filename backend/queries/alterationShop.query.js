@@ -74,29 +74,6 @@ const AlterationShopQuery = {
 		WHERE 
 			a.alteration_shop_id = ?
 	`,
-	selectTagList: `
-		SELECT
-			tag_id as tagId,
-			tag_name as tagName
-		FROM
-			tag
-	`,
-	selectLikeCount: `
-		SELECT
-			COUNT(*) as count
-		FROM
-			shop_like 
-		WHERE
-			alteration_shop_id = ?
-			AND
-			user_id = ?
-	`,
-	insertLike: `
-		INSERT INTO shop_like (alteration_shop_id, user_id) VALUES (?, ?)
-	`,
-	deleteLike: `
-		DELETE FROM shop_like WHERE alteration_shop_id = ? AND user_id = ?
-	`
 }
 
 module.exports = AlterationShopQuery;

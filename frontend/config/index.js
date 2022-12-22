@@ -23,6 +23,13 @@ module.exports = {
         pathRewrite: {
           '^/naver': '',
         },
+      },
+      '/juso': {
+        target: 'https://business.juso.go.kr',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/juso': '',
+        },
       }
     },
 

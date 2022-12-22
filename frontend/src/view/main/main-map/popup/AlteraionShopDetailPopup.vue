@@ -34,12 +34,14 @@ export default {
   data() {
     return {
       shopInfo: {},
+      shopId: -1,
     };
   },
   watch: {
     alterationShopId: {
       handler(value) {
         if (value > 0) {
+          this.shopId = value;
           this.loadData();
         }
       },
@@ -71,6 +73,7 @@ export default {
      */
     closePopup() {
       this.shopInfo = {};
+      this.shopId = -1;
       this.$emit('back');
     },
   },

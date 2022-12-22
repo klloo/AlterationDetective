@@ -7,10 +7,11 @@
       :longitude="longitude"
       @back="showDetailPopup = false"
     />
-    <div v-show="!showDetailPopup">
+    <search-popup v-show="showSearchPopup" @back="showSearchPopup = false" @select-addr="setPosition" />
+    <div v-show="showMap">
       <div class="search_box pa_1">
-        <div class="input_box">
-          <input type="text" placeholder="지역명, 매장이름으로 검색하세요." />
+        <div class="input_box" @click="showSearchPopup = true">
+          <input type="text" placeholder="지역명, 매장이름으로 검색하세요." readonly />
         </div>
         <div class="d_flex align_center">
           <span class="TUNE" @click="showDistanceTune = !showDistanceTune"></span>
@@ -64,6 +65,7 @@ import Recommend from './components/Recommend';
 import DistanceTune from './components/DistanceTune';
 import ModalViewM from '../layout/ModalSlideUp';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
+import SearchPopup from './popup/SearchPopup';
 
 export default {
   name: 'MainMap',
@@ -72,6 +74,7 @@ export default {
     ModalViewM,
     Recommend,
     DistanceTune,
+    SearchPopup,
   },
   data() {
     // 기본 위치 (강남역)
@@ -103,6 +106,8 @@ export default {
       selectedShopId: -1,
       // 상세 팝업 오픈 여부
       showDetailPopup: false,
+      // 검색 팝업 오픈 여부
+      showSearchPopup: false,
       // 로딩 중 여부
       isLoading: false,
       // 거리 조정 컴포넌트 제공 여부
@@ -112,6 +117,11 @@ export default {
       // 현위치 행정동 주소
       addressString: '',
     };
+  },
+  computed: {
+    showMap() {
+      return !this.showDetailPopup && !this.showSearchPopup;
+    },
   },
   methods: {
     /**
@@ -132,6 +142,7 @@ export default {
       const params = {
         longitude: this.longitude,
         latitude: this.latitude,
+        distance: this.distance * 1000,
       };
       getAlterationShopList(params)
         .then((data) => {
@@ -173,27 +184,31 @@ export default {
      * @return  {[type]}  [return description]
      */
     setCurrentPosition() {
-      if ('geolocation' in navigator) {
-        this.isLoading = true;
-        this.getCurrentPosition()
-          .then((pos) => {
-            // 마커 위치
-            this.latitude = pos.coords.latitude;
-            this.longitude = pos.coords.longitude;
-            // 지도 위치
-            this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
-          })
-          .catch((err) => {
-            throw new Error(err);
-          })
-          .finally(() => {
-            this.isLoading = false;
-            // 좌표 -> 주소 변환
-            this.coordsToAddres();
-            // 수선집 목록 조회
-            this.loadAlterationShopList();
-          });
-      }
+      this.isLoading = true;
+      this.getCurrentPosition()
+        .then((pos) => {
+          // 마커 위치
+          this.latitude = pos.coords.latitude;
+          this.longitude = pos.coords.longitude;
+          // 지도 위치
+          this.setMapPosition();
+        })
+        .catch((err) => {
+          throw new Error(err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+          // 좌표 -> 주소 변환
+          this.coordsToAddres();
+          // 수선집 목록 조회
+          this.loadAlterationShopList();
+        });
+    },
+    /**
+     * 현재 설정된 위경도 정보로 지도 위치를 설정한다.
+     */
+    setMapPosition() {
+      this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
     },
     /**
      * 좌표를 주소로 변환한다.
@@ -246,6 +261,46 @@ export default {
       this.distance = value;
       this.mapOptions.zoom = 16 - Math.floor(this.distance * 0.5);
       this.map.setOptions(this.mapOptions);
+      this.loadAlterationShopList();
+    },
+    /**
+     * 파라미터로 전달받은 주소로 지도 위치를 설정한다.
+     */
+    setPosition(addr) {
+      this.showSearchPopup = false;
+      this.showDetailPopup = false;
+      this.isLoading = true;
+      axios
+        .get('/naver/map-geocode/v2/geocode', {
+          headers: {
+            'X-NCP-APIGW-API-KEY-ID': 'n9dm36idtu',
+            'X-NCP-APIGW-API-KEY': 'CqEzG5y5swiaYpXOX1Yo7dgdvMlAdlwAGjfwBwiq',
+          },
+          params: {
+            query: addr,
+          },
+        })
+        .then((res) => {
+          const data = res.data;
+          if (data.status === 'OK') {
+            const address = data.addresses[0];
+            // 마커 위치
+            this.latitude = Number(address.y);
+            this.longitude = Number(address.x);
+            // 지도 위치
+            this.setMapPosition();
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        })
+        .finally(() => {
+          this.isLoading = false;
+          // 좌표 -> 주소 변환
+          this.coordsToAddres();
+          // 수선집 목록 조회
+          this.loadAlterationShopList();
+        });
     },
   },
 };
