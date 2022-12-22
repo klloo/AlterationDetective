@@ -4,11 +4,7 @@
       <span class="BACKARR mr_16" @click="closePopup"></span>
       <span class="fw_400 fs_20 popup_title"> 검색 </span>
     </div>
-    <div class="search_box pa_1">
-      <div class="input_box">
-        <input type="text" placeholder="지역명, 매장이름으로 검색하세요." v-model="keyword" />
-      </div>
-    </div>
+    <address-search ref="search" @set-result="setAddrList" />
     <div class="mt_32" v-show="!showResult">
       <div>
         <span>즐겨찾는 장소</span>
@@ -39,8 +35,10 @@
 <script>
 import axios from 'axios';
 import { isEmpty, debounce } from 'lodash';
+import AddressSearch from '@/view/main/components/AddressSearch';
 
 export default {
+  components: { AddressSearch },
   name: 'SearchPopup',
   data() {
     return {
@@ -62,6 +60,7 @@ export default {
      * 팝업을 닫는다.
      */
     closePopup() {
+      this.initData();
       this.$emit('back');
     },
     /**
@@ -95,34 +94,27 @@ export default {
      *  주소를 선택한다.
      */
     selectAddr(addr) {
+      this.initData();
       this.$emit('select-addr', addr.roadAddr);
+    },
+    /**
+     * 데이터를 초기화한다.
+     */
+    initData() {
+      this.$refs.search.initData();
+      this.addrList = [];
+    },
+    /**
+     * 주소 목록을 설정한다.
+     */
+    setAddrList(addrList) {
+      this.addrList = addrList;
     },
   },
 };
 </script>
 
 <style lang="css">
-.input_box {
-  position: relative;
-}
-.input_box:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Search.png') no-repeat;
-  background-size: cover;
-}
-.input_box input {
-  padding-left: 48px;
-  box-shadow: 0px 0px 8px rgb(0 0 0 / 20%);
-}
-.password_forgot {
-  margin-top: 63px;
-}
 .underline {
   text-decoration: underline;
   cursor: pointer;
