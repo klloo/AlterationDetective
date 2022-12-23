@@ -21,9 +21,15 @@ const shopService = {
     getAlterationShopList: (params) => new Promise ((resolve, reject) => {
         const queryParams = [params.longitude, params.latitude, params.userId];
         const subQuery = connection.raw(`(${AlterationShopQuery.selectAlterationShopList}) shop`, queryParams);
-        connection(subQuery)
-        .select('*')
-        .where('dist', '<' , params.distance)
+        const basicQuery = connection(subQuery).select('*');
+        if(!isNil(params.dist)) {
+            basicQuery.where('dist', '<' , params.distance);
+        }
+        if(!isNil(params.keyword)) {
+            const keyword = "%" + params.keyword + "%";
+            basicQuery.where('alterationShopName', 'like', keyword);
+        }
+        basicQuery
         .then((data) => {
             resolve(data);
         }).catch((err) => {

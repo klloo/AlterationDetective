@@ -20,9 +20,10 @@ const alterationShopContorller = {
         if(req.isAuthenticated() && req.user) {
             const params = {
                 userId: req.user.userEmail,
-                latitude: req.body.latitude,
-                longitude: req.body.longitude,
+                latitude: req.body.latitude || 37,
+                longitude: req.body.longitude || 127,
                 distance: req.body.distance,
+                keyword: req.body.keyword,
             };
             const data = await AlterationShopService.getAlterationShopList(params);
             result.success = true;
