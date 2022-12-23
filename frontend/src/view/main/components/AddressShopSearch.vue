@@ -9,7 +9,7 @@
 <script>
 import axios from 'axios';
 import { getAlterationShopList } from '@/api/alteration-shop';
-import { isEmpty, debounce } from 'lodash';
+import { isEmpty, debounce, cloneDeep } from 'lodash';
 
 export default {
   name: 'AddressSearch',
@@ -33,19 +33,19 @@ export default {
      * 키워드로 검색한다.
      */
     procSearch: debounce(function(e) {
-      const keyword = e.target.value;
+      this.keyword = e.target.value;
       if (this.searchAddr) {
-        this.procSearchAddr(keyword);
+        this.procSearchAddr();
       }
       if (this.searchShop) {
-        this.procSearchShop(keyword);
+        this.procSearchShop();
       }
     }, 250),
     /**
      * 주소를 검색한다.
      */
-    procSearchAddr(keyword) {
-      if (isEmpty(keyword)) {
+    procSearchAddr() {
+      if (isEmpty(this.keyword)) {
         this.$emit('set-addr', []);
         return;
       }
@@ -54,7 +54,7 @@ export default {
           params: {
             confmKey: 'U01TX0FVVEgyMDIyMTIyMjIxMTQwMTExMzM2Njk=',
             countPerPage: 5,
-            keyword: keyword,
+            keyword: this.keyword,
             resultType: 'json',
           },
         })
@@ -71,13 +71,13 @@ export default {
     /**
      * 수선집 목록을 조회한다.
      */
-    procSearchShop(keyword) {
-      if (isEmpty(keyword)) {
+    procSearchShop() {
+      if (isEmpty(this.keyword)) {
         this.$emit('set-shop', []);
         return;
       }
       const params = {
-        keyword: keyword,
+        keyword: this.keyword,
       };
       getAlterationShopList(params)
         .then((data) => {
@@ -92,6 +92,18 @@ export default {
     },
     initData() {
       this.keyword = '';
+    },
+    getKeyword() {
+      return this.keyword;
+    },
+    setKeyword(keyword) {
+      this.keyword = keyword;
+      if (this.searchAddr) {
+        this.procSearchAddr();
+      }
+      if (this.searchShop) {
+        this.procSearchShop();
+      }
     },
   },
 };

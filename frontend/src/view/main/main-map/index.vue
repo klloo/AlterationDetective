@@ -7,7 +7,7 @@
       :longitude="longitude"
       @back="showDetailPopup = false"
     />
-    <search-popup v-show="showSearchPopup" @back="showSearchPopup = false" @select-addr="setPosition" />
+    <search-popup v-show="showSearchPopup" @back="showSearchPopup = false" @select-addr="setPosition" @select-shop="openDetailPopup" />
     <div v-show="showMap">
       <div class="search_box pa_1">
         <div class="input_box" @click="showSearchPopup = true">
@@ -35,7 +35,7 @@
             :key="index"
             :lat="item.latitude"
             :lng="item.longitude"
-            @click="markerClick(item)"
+            @click="openDetailPopup(item)"
           ></naver-marker>
         </naver-maps>
         <span class="MYPLACE" @click="setCurrentPosition"></span>
@@ -43,7 +43,7 @@
       <!-- 수선집 목록 모달 -->
       <modal-view-m>
         <template v-slot:open>
-          <recommend :address="addressString" :alteration-shop-list="altreationShopList" @click-shop="markerClick"></recommend>
+          <recommend :address="addressString" :alteration-shop-list="altreationShopList" @click-shop="openDetailPopup"></recommend>
         </template>
         <template v-slot:close>
           <span class="shop_count">
@@ -247,10 +247,11 @@ export default {
       return this.selectedTagBtn === idx ? 'blue' : '';
     },
     /**
-     * 마커 클릭 이벤트 핸들러
+     * 상세 팝업 열기
      */
-    markerClick(item) {
+    openDetailPopup(item) {
       this.selectedShopId = item.alterationShopId;
+      this.showSearchPopup = false;
       this.showDetailPopup = true;
     },
     /**
