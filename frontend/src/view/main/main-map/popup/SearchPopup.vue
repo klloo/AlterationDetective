@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { isEmpty } from 'lodash';
 import AddressShopSearch from '@/view/main/components/AddressShopSearch';
 
@@ -77,6 +76,7 @@ export default {
      * 데이터를 초기화한다.
      */
     initData() {
+      this.$refs.search.initData();
       this.addrList = [];
       this.shopList = [];
     },

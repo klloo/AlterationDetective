@@ -1,7 +1,7 @@
 <template>
   <div class="search_box pa_1">
     <div class="input_box">
-      <input type="text" placeholder="지역명, 매장이름으로 검색하세요." @input="procSearch" />
+      <input type="text" placeholder="지역명, 매장이름으로 검색하세요." v-model="keyword" @input="procSearch" />
     </div>
   </div>
 </template>
@@ -22,6 +22,11 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
+  data() {
+    return {
+      keyword: '',
+    };
   },
   methods: {
     /**
@@ -84,6 +89,9 @@ export default {
         .catch((err) => {
           throw new Error(err);
         });
+    },
+    initData() {
+      this.keyword = '';
     },
   },
 };
