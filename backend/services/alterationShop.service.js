@@ -22,7 +22,7 @@ const shopService = {
         const queryParams = [params.longitude, params.latitude, params.userId];
         const subQuery = connection.raw(`(${AlterationShopQuery.selectAlterationShopList}) shop`, queryParams);
         const basicQuery = connection(subQuery).select('*');
-        if(!isNil(params.dist)) {
+        if(!isNil(params.distance)) {
             basicQuery.where('dist', '<' , params.distance);
         }
         if(!isNil(params.keyword)) {
