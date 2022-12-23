@@ -4,7 +4,7 @@
       <span class="BACKARR mr_16" @click="closePopup"></span>
       <span class="fw_400 fs_20 popup_title"> 검색 </span>
     </div>
-    <address-search ref="search" @set-result="setAddrList" />
+    <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" />
     <div class="mt_32" v-show="!showResult">
       <div>
         <span>즐겨찾는 장소</span>
@@ -28,32 +28,35 @@
         </li>
       </ul>
       <div class="mt_32">매장</div>
+      <ul class="mt_8">
+        <li class="mb_8" v-for="(shop, index) in shopList" :key="index">
+          <div>{{ shop.alterationShopName }}</div>
+          <div>{{ shop.address }}</div>
+          <hr />
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { isEmpty, debounce } from 'lodash';
-import AddressSearch from '@/view/main/components/AddressSearch';
+import { isEmpty } from 'lodash';
+import AddressShopSearch from '@/view/main/components/AddressShopSearch';
 
 export default {
-  components: { AddressSearch },
+  components: { AddressShopSearch },
   name: 'SearchPopup',
   data() {
     return {
-      keyword: '',
-      showResult: false,
       addrList: [],
+      shopList: [],
     };
   },
-  watch: {
-    addrList() {
-      this.showResult = !isEmpty(this.addrList);
+  computed: {
+    showResult() {
+      return !isEmpty(this.addrList) || !isEmpty(this.shopList);
     },
-    keyword: debounce(function() {
-      this.searchAddr();
-    }, 250),
   },
   methods: {
     /**
@@ -62,33 +65,6 @@ export default {
     closePopup() {
       this.initData();
       this.$emit('back');
-    },
-    /**
-     * 주소를 검색한다.
-     */
-    searchAddr() {
-      if (isEmpty(this.keyword)) {
-        this.addrList = [];
-        return;
-      }
-      axios
-        .get('/juso/addrlink/addrLinkApi.do', {
-          params: {
-            confmKey: 'U01TX0FVVEgyMDIyMTIyMjIxMTQwMTExMzM2Njk=',
-            countPerPage: 5,
-            keyword: this.keyword,
-            resultType: 'json',
-          },
-        })
-        .then((res) => {
-          const data = res.data.results;
-          if (data.common.errorCode === '0') {
-            this.addrList = data.juso;
-          }
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
     },
     /**
      *  주소를 선택한다.
@@ -101,14 +77,20 @@ export default {
      * 데이터를 초기화한다.
      */
     initData() {
-      this.$refs.search.initData();
       this.addrList = [];
+      this.shopList = [];
     },
     /**
      * 주소 목록을 설정한다.
      */
     setAddrList(addrList) {
       this.addrList = addrList;
+    },
+    /**
+     * 수선집 목록을 설정한다.
+     */
+    setShopList(shopList) {
+      this.shopList = shopList;
     },
   },
 };

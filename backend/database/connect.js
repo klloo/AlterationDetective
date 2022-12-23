@@ -10,6 +10,7 @@ const connection = require('knex')({
         password: dbConfig.PASSWORD,
         database: dbConfig.DB
     },
+    // debug: true,
 })
 
 module.exports = connection;
