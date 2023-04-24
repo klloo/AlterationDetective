@@ -29,3 +29,7 @@ export function sendAuthMail(params) {
 export function checkDuplicatedEmail(params) {
     return axios.post(`${PREFIX_URL}/check-duplicated-email`, params);
 }
+
+export function getBookmarkPlace() {
+    return axios.get(`${PREFIX_URL}/get-bookmark-place`);
+}

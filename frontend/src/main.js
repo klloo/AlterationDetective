@@ -15,11 +15,14 @@ import 'vue-toastification/dist/index.css';
 import VueLoading from 'vue-loading-template'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
 Vue.config.productionTip = false;
 
+Vue.use(ElementUI);
 Vue.use(VueLoading);
 Vue.component('VueSlider', VueSlider)
 

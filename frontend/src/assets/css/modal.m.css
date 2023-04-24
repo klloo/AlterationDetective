@@ -15,15 +15,13 @@
     left: 0;
     right: 0;
     width: 100%;
-    padding: 10px 16px 0 16px;
+    padding: 5px 16px 0 16px;
     color: #333;
     text-align: center;
     background-color: #fff;
     border-radius: 20px 20px 0 0;
-    z-index: 998;
-    transition: all 0.1s ease 0s;
+    z-index: 999;
     box-shadow: 0px -4px 16px rgba(0, 0, 0, 0.1);
-    min-height: 250px;
 }
 .modal_card_m .modal_height100{
     height: 100vh;
@@ -65,11 +63,13 @@
 }
 .modal_scrollable {
     height: 100%;
-    overflow: auto;
+    overflow: scroll;
+    padding-bottom: 120px;
 }
 .modal_scrollable::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
 }
+.modal_scrollable:-webkit-overflow-scrolling:touch
 .modal_title_m {
     position: absolute;
     top: 20px;

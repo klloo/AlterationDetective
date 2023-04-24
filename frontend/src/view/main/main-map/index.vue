@@ -1,33 +1,28 @@
 <template>
   <div>
-    <alteraion-shop-detail-popup
-      v-show="showDetailPopup"
-      :alteration-shop-id="selectedShopId"
-      :latitude="latitude"
-      :longitude="longitude"
-      @back="showDetailPopup = false"
-    />
-    <search-popup v-show="showSearchPopup" @back="showSearchPopup = false" @select-addr="setPosition" @select-shop="openDetailPopup" />
-    <div v-show="showMap">
+    <!-- <alteraion-shop-detail-popup ref="detailPopup" :alteration-shop-id="selectedShopId" :latitude="latitude" :longitude="longitude" /> -->
+    <search-popup ref="searchPopup" @select-addr="setPosition" @select-shop="selectAlterationShop" />
+    <div>
       <div class="search_box pa_1">
-        <div class="input_box" @click="showSearchPopup = true">
-          <input type="text" placeholder="지역명, 매장이름으로 검색하세요." readonly />
+        <div @click="openSearchPopup">
+          <el-input class="search_bar" prefix-icon="el-icon-search" type="text" placeholder="지역명, 매장이름으로 검색하세요." readonly />
         </div>
         <div class="d_flex align_center">
-          <span class="TUNE" @click="showDistanceTune = !showDistanceTune"></span>
+          <el-tag :class="`my_tag mr_16 ${showDistanceTune ? 'selected' : ''}`" @click="showDistanceTune = !showDistanceTune">
+            <i class="el-icon-s-operation mr_2 ml_2" />
+          </el-tag>
           <div class="filter py_1">
             <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
-            <button v-for="tag in tagList" :key="tag.tagId" :class="buttonClass(tag.tagId)" @click="selectedTagBtn = tag.tagId">
-              {{ tag.tagName }}
-            </button>
+            <el-tag :class="`my_tag ml_3 mr_3 ${buttonClass(tag.tagId)}`" v-for="tag in tagList" :key="tag.tagId" @click="clickTag(tag.tagId)">
+              &nbsp;{{ tag.tagName }}&nbsp;
+            </el-tag>
           </div>
         </div>
         <!-- 거리 조정 슬라이더 -->
         <distance-tune v-show="showDistanceTune" @change-value="changeDistance"></distance-tune>
       </div>
       <!-- 지도 -->
-      <vue-loading class="spinner" v-show="isLoading" type="spin" color="black"></vue-loading>
-      <div class="map_wrap">
+      <div class="map_wrap" v-loading="isLoading" element-loading-background="rgba(255, 255, 255, 0.8)">
         <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
           <naver-marker :lat="latitude" :lng="longitude" />
           <naver-marker
@@ -35,24 +30,34 @@
             :key="index"
             :lat="item.latitude"
             :lng="item.longitude"
-            @click="openDetailPopup(item)"
+            @click="selectAlterationShop(item)"
           ></naver-marker>
         </naver-maps>
-        <span class="MYPLACE" @click="setCurrentPosition"></span>
+        <el-button class="my-place" @click="setCurrentPosition" icon="el-icon-aim"> </el-button>
       </div>
-      <!-- 수선집 목록 모달 -->
+      <!-- 수선집 목록 -->
       <modal-view-m>
-        <template v-slot:open>
-          <recommend :address="addressString" :alteration-shop-list="altreationShopList" @click-shop="openDetailPopup"></recommend>
-        </template>
-        <template v-slot:close>
+        <div slot="open-title">
+          <div class="tal">
+            <p class="fs_24 mb_16">
+              <span class="fw_600">{{ addressString }}</span>
+              근처의
+              <br />
+              수선집을 추천하고 있어요!
+            </p>
+          </div>
+        </div>
+        <div slot="open">
+          <recommend :alteration-shop-list="altreationShopList" @click-shop="selectAlterationShop"></recommend>
+        </div>
+        <div class="mt_8" slot="close">
           <span class="shop_count">
             <span style="font-weight: bold">
               {{ altreationShopList.length }}
             </span>
             개의 수선집 목록 보기
           </span>
-        </template>
+        </div>
       </modal-view-m>
     </div>
   </div>
@@ -63,7 +68,7 @@ import axios from 'axios';
 import { getAlterationShopList, getTagList } from '@/api/alteration-shop';
 import Recommend from './components/Recommend';
 import DistanceTune from './components/DistanceTune';
-import ModalViewM from '../layout/ModalSlideUp';
+import ModalViewM from '../../components/ModalSlideUp';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
 import SearchPopup from './popup/SearchPopup';
 
@@ -104,10 +109,6 @@ export default {
       altreationShopList: [],
       // 현재 클릭한 수선집 id
       selectedShopId: -1,
-      // 상세 팝업 오픈 여부
-      showDetailPopup: false,
-      // 검색 팝업 오픈 여부
-      showSearchPopup: false,
       // 로딩 중 여부
       isLoading: false,
       // 거리 조정 컴포넌트 제공 여부
@@ -116,12 +117,9 @@ export default {
       distance: 2,
       // 현위치 행정동 주소
       addressString: '',
+      // 하단 추천 수선집 open 여부
+      openShopList: false,
     };
-  },
-  computed: {
-    showMap() {
-      return !this.showDetailPopup && !this.showSearchPopup;
-    },
   },
   methods: {
     /**
@@ -244,15 +242,18 @@ export default {
      * 버튼 클래스 반환
      */
     buttonClass(idx) {
-      return this.selectedTagBtn === idx ? 'blue' : '';
+      return this.selectedTagBtn === idx ? 'selected' : '';
     },
     /**
-     * 상세 팝업 열기
+     * 수선집 선택한 경우 탭 변경
      */
-    openDetailPopup(item) {
-      this.selectedShopId = item.alterationShopId;
-      this.showSearchPopup = false;
-      this.showDetailPopup = true;
+    selectAlterationShop(item) {
+      const param = {
+        alterationShopId: item.alterationShopId,
+        latitude: this.latitude,
+        longitude: this.longitude,
+      };
+      this.$emit('change-tab', 'alterationShop', param);
     },
     /**
      * 설정한 거리 변경 핸들러
@@ -268,8 +269,6 @@ export default {
      * 파라미터로 전달받은 주소로 지도 위치를 설정한다.
      */
     setPosition(addr) {
-      this.showSearchPopup = false;
-      this.showDetailPopup = false;
       this.isLoading = true;
       axios
         .get('/naver/map-geocode/v2/geocode', {
@@ -303,33 +302,35 @@ export default {
           this.loadAlterationShopList();
         });
     },
+    /**
+     * 태그를 클릭한다.
+     */
+    clickTag(tagId) {
+      if (this.selectedTagBtn == tagId) this.selectedTagBtn = 0;
+      else this.selectedTagBtn = tagId;
+    },
+    /**
+     * 검색 팝업을 연다.
+     */
+    openSearchPopup() {
+      this.$refs.searchPopup.open();
+    },
   },
 };
 </script>
 <style scoped>
+.search_bar {
+  position: relative;
+}
+.search_bar {
+  box-shadow: 0px 0px 7px rgb(0 0 0/ 20%);
+}
 .main .search_box {
   position: absolute;
   z-index: 999;
   width: 100%;
   padding: 1em;
-}
-.main .input_box {
-  position: relative;
-}
-.main .input_box:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Search.png') no-repeat;
-  background-size: cover;
-}
-.main .input_box input {
-  padding-left: 48px;
-  box-shadow: 0px 0px 8px rgb(0 0 0 / 20%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgb(255, 255, 255, 0.1));
 }
 .main .TUNE {
   flex-shrink: 0;
@@ -351,7 +352,6 @@ export default {
 .main .filter span,
 .filter button {
   display: inline-block;
-  margin-right: 8px;
 }
 .main .filter button:last-child {
   margin-right: 0;
@@ -376,18 +376,31 @@ export default {
   left: 0;
   width: 100vw;
 }
-.main .MYPLACE {
+.main .my-place {
   z-index: 999;
   position: absolute;
-  bottom: 8px;
+  bottom: 90px;
   right: 16px;
-  width: 24px;
-  height: 24px;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  color: black;
+  height: 38px;
+  border-radius: 50px;
 }
-.spinner {
-  z-index: 999;
-  position: absolute;
-  top: 100vw;
-  left: 50%;
+.my_tag {
+  border-radius: 15px;
+  color: rgb(87, 87, 87);
+  background-color: white;
+  border: none;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  height: 28px;
+}
+.selected {
+  border: none;
+  color: white;
+  background: var(--maincolor) !important;
+}
+.shop_count {
+  font-size: 15px;
 }
 </style>

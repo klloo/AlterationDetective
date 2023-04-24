@@ -1,40 +1,29 @@
 <template>
-  <ul class="tal">
-    <li class="list_item">
-      <p class="fs_24 mb_16">
-        <span class="fw_600">{{ address }}</span>
-        근처의
-        <br />
-        수선집을 추천하고 있어요!
-      </p>
-      <p class="mb_8">추천 수선집</p>
-      <div v-if="isEmpty(alterationShopList)">추천 수선집이 없어요</div>
-      <div v-for="(shop, index) in alterationShopList" :key="index" class="mb_32" @click="$emit('click-shop', shop)">
+  <div>
+    <div class="mt_100" v-if="isEmpty(alterationShopList)">추천 수선집이 없어요 ㅜ_ㅜ</div>
+    <div v-for="(shop, index) in alterationShopList" :key="index" class="mb_16" @click="$emit('click-shop', shop)">
+      <el-card>
         <span class="RECOMMEND"></span>
-        <p class="mb_8 fw_600">
+        <p class="fw_700 tal title">
           {{ shop.alterationShopName }}
-          <span class="specialty">교복</span>
         </p>
-        <div class="mb_8 d_flex">
-          <div class="recommend_info">
-            <span class="STAR"></span>
-            <span class="star_score"> {{ shop.starRate }}</span>
-          </div>
-          <div class="recommend_info">
-            <span>리뷰</span>
-            <span> {{ shop.reviewCount }}</span>
-          </div>
-          <div class="recommend_info">
-            <span>{{ distFormatter(shop.dist) }}</span>
-          </div>
-        </div>
         <div class="mb_8 d_flex align_center justify_between">
           <span class="address"> {{ shop.address }}</span>
+        </div>
+        <div class="d_flex justify_between">
+          <div class="mb_8 mt_14 d_flex recommend_info">
+            <span>{{ distFormatter(shop.dist) }}</span>
+            <el-divider direction="vertical"></el-divider>
+            <span>리뷰</span>
+            <span>&nbsp;{{ shop.reviewCount }}</span
+            ><el-divider direction="vertical"></el-divider>
+            <el-rate :value="shop.starRate" show-score disabled />
+          </div>
           <span :class="shop.likeFlag ? 'LIKE_BLUE' : 'LIKE_GRAY'" @click.stop="toggleLike(shop.alterationShopId)"></span>
         </div>
-      </div>
-    </li>
-  </ul>
+      </el-card>
+    </div>
+  </div>
 </template>
 <script>
 import { find, isEmpty } from 'lodash';
@@ -76,9 +65,10 @@ export default {
 <style lang="css">
 .RECOMMEND {
   display: block;
-  width: 343px;
+  width: 100%;
   height: 136px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  border-radius: 8px;
 }
 .STAR {
   display: inline-block;
@@ -88,20 +78,18 @@ export default {
 .LIKE_GRAY,
 .LIKE_BLUE {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+}
+.title {
+  margin-bottom: 3px;
+  font-size: 18px;
 }
 .recommend_info {
   width: auto;
-  margin-right: 4px;
-}
-.recommend_info:last-child {
-  margin: 0;
-}
-.recommend_info:nth-child(even) {
-  border-left: 1px solid #acb4bc;
-  border-right: 1px solid #acb4bc;
-  padding: 0 4px;
+  margin-right: 8px;
+  margin-top: 2px;
+  font-size: 15px;
 }
 .specialty {
   font-size: 12px;
@@ -110,5 +98,9 @@ export default {
 }
 .list_item {
   border-bottom: 1px solid #dde3e7;
+}
+.address {
+  color: #6a6d75;
+  font-size: 15px;
 }
 </style>

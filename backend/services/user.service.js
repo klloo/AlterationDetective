@@ -57,6 +57,22 @@ const userService = {
             reject(e);
         });
     }),
+    /**
+     * 사용자의 즐겨찾는 장소를 조회한다.
+     */
+    getBookmarkPlace: (email) => new Promise ((resolve, reject) => {
+        connection('bookmark_place as place')
+        .select('place_id as placeId', 'place_name as placeName', 'place.address', 'icon_class as iconClass', 'order_index as orderIndex')
+        .join('user', 'user.user_email', '=', 'place.user_email')
+        .where('user.user_email', email)
+        .orderBy('order_index', 'asc')
+        .then((data) => {
+            resolve(data);
+        })
+        .catch((e) => {
+            reject(e);
+        });
+    }),
 };     
 
 module.exports = userService;

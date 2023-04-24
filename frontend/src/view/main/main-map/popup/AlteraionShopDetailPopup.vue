@@ -1,22 +1,24 @@
 <template>
-  <div>
-    <div class="mb_32 d_flex align_center mb_32">
-      <span class="BACKARR mr_16" @click="closePopup"></span>
-      <span class="fw_400 fs_20">{{ shopInfo.alterationShopName }}</span>
+  <popup ref="popup" :title="shopInfo.alterationShopName" v-loading="isLoading">
+    <div slot="content">
+      <div>{{ shopInfo.address }}</div>
+      <div>{{ shopInfo.phoneNumber }}</div>
+      <div>{{ shopInfo.starRate }}</div>
+      <div>
+        <span v-for="tag in shopInfo.tagList" :key="tag.tagId"> #{{ tag.tagName }} </span>
+      </div>
     </div>
-    <div>{{ shopInfo.address }}</div>
-    <div>{{ shopInfo.phoneNumber }}</div>
-    <div>{{ shopInfo.starRate }}</div>
-    <div>
-      <span v-for="tag in shopInfo.tagList" :key="tag.tagId"> #{{ tag.tagName }} </span>
-    </div>
-  </div>
+  </popup>
 </template>
 <script>
+import Popup from '../../../components/popup';
 import { getAlterationShopDetail } from '@/api/alteration-shop';
-
+// 이 컴포넌트 안쓸거면 지워야함
 export default {
   name: 'AlterationShopDetailPopup',
+  components: {
+    Popup,
+  },
   props: {
     alterationShopId: {
       type: Number,
@@ -35,6 +37,7 @@ export default {
     return {
       shopInfo: {},
       shopId: -1,
+      isLoading: false,
     };
   },
   watch: {
@@ -42,6 +45,7 @@ export default {
       handler(value) {
         if (value > 0) {
           this.shopId = value;
+          this.shopInfo = {};
           this.loadData();
         }
       },
@@ -57,6 +61,7 @@ export default {
         latitude: this.latitude,
         alterationShopId: this.alterationShopId,
       };
+      this.isLoading = true;
       getAlterationShopDetail(params)
         .then((data) => {
           const result = data.data;
@@ -66,24 +71,25 @@ export default {
         })
         .catch((err) => {
           throw new Error(err);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
+    },
+    /**
+     * 팝업을 연다.
+     */
+    open() {
+      this.$refs.popup.open();
     },
     /**
      * 팝업을 닫는다.
      */
     closePopup() {
-      this.shopInfo = {};
-      this.shopId = -1;
-      this.$emit('back');
+      this.$refs.popup.close();
     },
   },
 };
 </script>
 
-<style lang="css">
-.password_forgot {
-  margin-top: 63px;
-}
-.side_title {
-}
-</style>
+<style lang="css"></style>

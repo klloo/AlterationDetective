@@ -10,5 +10,6 @@ router.get('/check', UserController.getLoginUser);
 router.post('/login', UserController.login);
 router.get('/logout', UserController.logout);
 router.post('/send-auth-mail', wrapAsyncController(UserController.sendAuthMail));
+router.get('/get-bookmark-place', wrapAsyncController(UserController.getBookmarkPlace));
 
 module.exports = router

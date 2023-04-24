@@ -1,7 +1,14 @@
 <template>
   <div class="search_box pa_1">
     <div class="input_box">
-      <input type="text" placeholder="지역명, 매장이름으로 검색하세요." v-model="keyword" @input="procSearch" />
+      <el-input
+        class="search_bar"
+        prefix-icon="el-icon-search"
+        placeholder="지역명, 매장이름으로 검색하세요."
+        v-model="keyword"
+        @input="procSearch"
+        clearable
+      />
     </div>
   </div>
 </template>
@@ -33,7 +40,6 @@ export default {
      * 키워드로 검색한다.
      */
     procSearch: debounce(function(e) {
-      this.keyword = e.target.value;
       if (this.searchAddr) {
         this.procSearchAddr();
       }
@@ -53,7 +59,7 @@ export default {
         .get('/juso/addrlink/addrLinkApi.do', {
           params: {
             confmKey: 'U01TX0FVVEgyMDIyMTIyMjIxMTQwMTExMzM2Njk=',
-            countPerPage: 5,
+            countPerPage: 20,
             keyword: this.keyword,
             resultType: 'json',
           },
@@ -110,22 +116,8 @@ export default {
 </script>
 
 <style lang="css">
-.input_box {
+.search_bar {
   position: relative;
-}
-.input_box:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background: url('~@/assets/images/Search.png') no-repeat;
-  background-size: cover;
-}
-.input_box input {
-  padding-left: 48px;
-  box-shadow: 0px 0px 8px rgb(0 0 0 / 20%);
+  box-shadow: 0px 0px 3px rgb(0 0 0/ 10%);
 }
 </style>

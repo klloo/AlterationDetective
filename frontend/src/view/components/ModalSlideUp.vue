@@ -1,14 +1,14 @@
 <template>
-  <div ref="card" class="modal_card_m" :style="{ top: `${isMove ? y : calcY()}px` }">
+  <div ref="card" class="modal_card_m" :style="{ height: `${isMove ? y : calcY()}px` }">
     <div ref="pan">
       <span class="top_bar"></span>
-    </div>
-    <div class="modal_header tal">
-      <slot name="title"></slot>
-      <span class="modal_close"></span>
+      <div class="modal_header mt_16">
+        <slot name="open-title" v-if="this.state === 'open'"></slot>
+        <slot name="close" v-if="this.state === 'close'" />
+        <span class="modal_close"></span>
+      </div>
     </div>
     <div class="modal_scrollable">
-      <slot name="close" v-if="this.state === 'close'" />
       <slot name="open" v-if="this.state === 'open'" />
     </div>
   </div>
@@ -34,7 +34,7 @@ export default {
     this.mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
 
     this.mc.on('panup pandown', (evt) => {
-      this.y = evt.center.y - 16;
+      this.y = window.innerHeight - evt.center.y;
     });
 
     this.mc.on('panstart', (evt) => {
@@ -60,10 +60,10 @@ export default {
       switch (this.state) {
         // 닫은 상태 일 때 높이
         case 'close':
-          return window.innerHeight * 0.8;
+          return window.innerHeight * 0.1;
         // 연 상태 일 때 높이
         case 'open':
-          return window.innerHeight * 0.2;
+          return window.innerHeight * 0.78;
         default:
           return this.y;
       }
@@ -75,7 +75,8 @@ export default {
 .top_bar {
   height: 3px;
   width: 56px;
-  background: #000;
+  background: #8e8e8e;
+  border-radius: 3px;
   display: inline-block;
 }
 </style>
