@@ -4,7 +4,7 @@
       <span>거리 </span>
       <span>현위치 ~ {{ distance }} km </span>
     </div>
-    <vue-slider v-model="distance" :data="distanceList" data-value="value" data-label="label" tooltip="none"></vue-slider>
+    <el-slider class="mr_12 ml_12" v-model="distance" :show-tooltip="false" :marks="distanceList" :max="8"> </el-slider>
   </div>
 </template>
 <script>
@@ -12,32 +12,14 @@ export default {
   name: 'DistanceTune',
   data() {
     return {
-      distanceList: [
-        {
-          value: 0,
-          label: '0km',
-        },
-        {
-          value: 1,
-          label: '1km',
-        },
-        {
-          value: 2,
-          label: '2km',
-        },
-        {
-          value: 4,
-          label: '4km',
-        },
-        {
-          value: 6,
-          label: '6km',
-        },
-        {
-          value: 8,
-          label: '8km',
-        },
-      ],
+      distanceList: {
+        0: '0km',
+        1: '1km',
+        2: '2km',
+        4: '4km',
+        6: '6km',
+        8: '8km',
+      },
       distance: 2,
     };
   },
@@ -50,8 +32,8 @@ export default {
 </script>
 <style>
 .distance_wrapper {
-  padding: 10px 20px;
-  height: 70px;
+  padding: 20px 20px;
+  height: 105px;
   border-width: 0px;
   font-family: inherit;
   font-size: 14px;
@@ -60,11 +42,12 @@ export default {
   border-radius: 12px;
   border-style: none;
   cursor: pointer;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
   transition: 0.5s;
 }
 .title_wrapper {
+  color: rgb(106, 106, 106);
   display: flex;
   justify-content: space-between;
 }

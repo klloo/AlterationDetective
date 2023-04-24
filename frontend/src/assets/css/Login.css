@@ -5,7 +5,9 @@
 	height: 24px;
 }
 .LOGIN_IMG {
+
 	background-image: url('~@/assets/images/LOGIN_IMG.png');
+	filter: brightness(0) saturate(100%) invert(52%) sepia(91%) saturate(358%) hue-rotate(199deg) brightness(93%) contrast(94%) drop-shadow(2px 2px 2px rgb(255, 255, 255));
 	background-position: center;
 	background-size: cover;
 	display: block;
@@ -16,17 +18,25 @@
 	font-size: 32px;
 	font-weight: 700;
 	text-align: left;
-	color: #81acff;
+	color: #224386;
 	margin-bottom: 16px;
 }
 .login .input_box > input {
+	border: 1px solid rgba(204,227,255,1);
 	height: 56px;
 	margin-bottom: 16px;
-	border: 2px solid rgba(204,227,255,1);
 	background-repeat: no-repeat;
 	background-size: 24px;
 	padding-left: 48px;
 }
+.login .info_text {
+	font-size: 13px;
+	color:rgb(63, 74, 93);
+}
+.login .terms_text {
+	font-size: 15px;
+}
+
 .checkbox{
   display: flex;
   align-items: center;
@@ -68,7 +78,7 @@
 }
 
 .checkbox input:checked + .checkbox_icon {
-	background:  #8AB2FF;
+	background:  #538DFD;
 }
 .checkbox input:checked + .checkbox_icon::before {
 	height: 6px;
@@ -85,7 +95,7 @@
 	display: block;
 	width: 100%;
 	height: 1px;
-	background: #8AB2FF;
+	background: #538DFD;
 	margin-bottom: 16px;
 }
 .single_checked > div{
@@ -96,4 +106,5 @@
 }
 .single_checked .essential{
   color: #538DFD;
+  font-size: 15px;
 }

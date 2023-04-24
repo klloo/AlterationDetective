@@ -17,7 +17,7 @@ const keyword = {
         });
         if(!isExist) {
             state.recentKeywords.unshift(keyword);
-            if(state.recentKeywords.length > 6) {
+            if(state.recentKeywords.length > 10) {
                 state.recentKeywords.pop();
             }
         }

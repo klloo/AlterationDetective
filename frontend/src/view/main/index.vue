@@ -1,17 +1,17 @@
 <template>
   <div>
-    <components :is="currentComponent" ref="currentView" />
+    <components :is="currentTab.component" ref="currentView" @change-tab="changeTab" :param="currentTab.param" />
     <div>
       <ul class="tab_area">
         <li
           v-for="(tab, index) in tabList"
           :key="index"
           style="cursor:pointer"
-          @click="currentComponent = tab.component"
-          :class="{ active: currentComponent === tab.component }"
+          @click="changeTab(tab.name, {})"
+          :class="{ active: currentTab.name === tab.name }"
         >
           <div class="tab_item">
-            <img :src="tab.img2" alt="menu" v-if="currentComponent === tab.component" />
+            <img :src="tab.img2" alt="menu" v-if="currentTab.name === tab.name" />
             <img :src="tab.img" alt="menu" v-else />
           </div>
         </li>
@@ -37,31 +37,35 @@ export default {
   },
   data() {
     return {
-      currentComponent: MainMapView,
+      currentTab: {},
       tabList: [
         {
           name: 'mainMap',
           img: require('@/assets/images/TAB_HOME_GRAY.png'),
           img2: require('@/assets/images/TAB_HOME_BLUE.png'),
           component: MainMapView,
+          param: {},
         },
         {
           name: 'alterationShop',
           img: require('@/assets/images/REPAIR_GRAY.png'),
           img2: require('@/assets/images/REPAIR_BLUE.png'),
           component: AlterationShopView,
+          param: {},
         },
         {
           name: 'favorite',
           img: require('@/assets/images/FAVORITE_GRAY.png'),
           img2: require('@/assets/images/FAVORITE_BLUE.png'),
           component: FavoriteView,
+          param: {},
         },
         {
           name: 'myPage',
           img: require('@/assets/images/USER_PRO_GRAY.png'),
           img2: require('@/assets/images/USER_PRO_BlUE.png'),
           component: MyPageView,
+          param: {},
         },
       ],
     };
@@ -72,7 +76,7 @@ export default {
     },
   },
   watch: {
-    currentComponent() {
+    currentTab() {
       this.$nextTick(() => {
         if (this.$refs.currentView.loadData) {
           this.$refs.currentView.loadData();
@@ -80,8 +84,15 @@ export default {
       });
     },
   },
-  method: {
-    changeImg() {},
+  mounted() {
+    this.currentTab = this.tabList[0];
+  },
+  methods: {
+    changeTab(tabname, param) {
+      const tab = this.tabList.find((t) => t.name === tabname);
+      tab.param = param;
+      this.currentTab = tab;
+    },
   },
 };
 </script>

@@ -134,8 +134,19 @@ const userContorller = {
             }
             transporter.close()
         });
-    }
-
+    },
+    /**
+     * 로그인한 사용자의 즐겨찾는 장소를 조회한다.
+     */
+    getBookmarkPlace: async(req, res, next) => {
+        const result = new Result();
+        if(req.isAuthenticated() && req.user) {
+            const email = req.user.userEmail;
+            result.success = true;
+            result.data = await UserService.getBookmarkPlace(email);
+        }
+        return res.send(result);
+    },
 };
 
 module.exports = userContorller;
