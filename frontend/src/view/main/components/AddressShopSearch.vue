@@ -1,14 +1,7 @@
 <template>
   <div class="search_box pa_1">
     <div class="input_box">
-      <el-input
-        class="search_bar"
-        prefix-icon="el-icon-search"
-        placeholder="지역명, 매장이름으로 검색하세요."
-        v-model="keyword"
-        @input="procSearch"
-        clearable
-      />
+      <el-input class="search_bar" prefix-icon="el-icon-search" :placeholder="inputPlaceholder" v-model="keyword" @input="procSearch" clearable />
     </div>
   </div>
 </template>
@@ -34,6 +27,14 @@ export default {
     return {
       keyword: '',
     };
+  },
+  computed: {
+    inputPlaceholder() {
+      if (this.searchShop && this.searchAddr) return '지역명, 매장이름으로 검색하세요.';
+      else if (this.searchShop) return '매장이름으로 검색하세요.';
+      else if (this.searchAddr) return '지역명으로 검색하세요.';
+      return '';
+    },
   },
   methods: {
     /**

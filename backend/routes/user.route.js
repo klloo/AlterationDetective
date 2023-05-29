@@ -11,5 +11,6 @@ router.post('/login', UserController.login);
 router.get('/logout', UserController.logout);
 router.post('/send-auth-mail', wrapAsyncController(UserController.sendAuthMail));
 router.get('/get-bookmark-place', wrapAsyncController(UserController.getBookmarkPlace));
-
+router.get('/get-bookmark-place-max-id', wrapAsyncController(UserController.getBookmarkPlaceMaxId));
+router.post('/update-bookmark-place', wrapAsyncController(UserController.updateBookmarkPlace));
 module.exports = router

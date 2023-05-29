@@ -10,11 +10,6 @@ import VueGeolocation from 'vue-geolocation-api';
 import './permission';
 import '@/assets/css/reset.css';
 import '@/assets/css/common.css';
-import Toast from 'vue-toastification';
-import 'vue-toastification/dist/index.css';
-import VueLoading from 'vue-loading-template'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
@@ -23,24 +18,14 @@ Vue.prototype.$store = store;
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
-Vue.use(VueLoading);
-Vue.component('VueSlider', VueSlider)
 
 Vue.use(naver, {
   clientID: 'n9dm36idtu',
   useGovAPI: false, //OpenAPI 사용
+  subModules: 'geocoder',
 });
 
 Vue.use(VueGeolocation);
-Vue.use(Toast, {
-  transition: 'Vue-Toastification__slide',
-  maxToasts: 20,
-  newestOnTop: false,
-  hideProgressBar: true,
-  timeout: 2000,
-  position: 'bottom-center',
-  toastClassName: 'custom-toast-class',
-});
 
 /* eslint-disable no-new */
 new Vue({

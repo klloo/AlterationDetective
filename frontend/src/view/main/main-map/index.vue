@@ -1,22 +1,16 @@
 <template>
   <div>
-    <!-- <alteraion-shop-detail-popup ref="detailPopup" :alteration-shop-id="selectedShopId" :latitude="latitude" :longitude="longitude" /> -->
     <search-popup ref="searchPopup" @select-addr="setPosition" @select-shop="selectAlterationShop" />
+    <alteraion-shop-detail-popup ref="detailPopup"></alteraion-shop-detail-popup>
     <div>
       <div class="search_box pa_1">
         <div @click="openSearchPopup">
           <el-input class="search_bar" prefix-icon="el-icon-search" type="text" placeholder="지역명, 매장이름으로 검색하세요." readonly />
         </div>
-        <div class="d_flex align_center">
-          <el-tag :class="`my_tag mr_16 ${showDistanceTune ? 'selected' : ''}`" @click="showDistanceTune = !showDistanceTune">
+        <div class="d_flex align_center mt_8">
+          <el-tag :class="`my_tag mr_16 ${showDistanceTune ? 'selected-btn' : ''}`" @click="showDistanceTune = !showDistanceTune">
             <i class="el-icon-s-operation mr_2 ml_2" />
           </el-tag>
-          <div class="filter py_1">
-            <!-- 필터 버튼 리스트 형식으로 변환하여 반복문으로 버튼 작성 (추후 확장 고려) -->
-            <el-tag :class="`my_tag ml_3 mr_3 ${buttonClass(tag.tagId)}`" v-for="tag in tagList" :key="tag.tagId" @click="clickTag(tag.tagId)">
-              &nbsp;{{ tag.tagName }}&nbsp;
-            </el-tag>
-          </div>
         </div>
         <!-- 거리 조정 슬라이더 -->
         <distance-tune v-show="showDistanceTune" @change-value="changeDistance"></distance-tune>
@@ -24,7 +18,7 @@
       <!-- 지도 -->
       <div class="map_wrap" v-loading="isLoading" element-loading-background="rgba(255, 255, 255, 0.8)">
         <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
-          <naver-marker :lat="latitude" :lng="longitude" />
+          <naver-marker :lat="mapLatitude" :lng="mapLongitude" />
           <naver-marker
             v-for="(item, index) in altreationShopList"
             :key="index"
@@ -33,19 +27,20 @@
             @click="selectAlterationShop(item)"
           ></naver-marker>
         </naver-maps>
+        <el-button class="refresh" @click="refreshAlterationShop" icon="el-icon-refresh-right"> </el-button>
         <el-button class="my-place" @click="setCurrentPosition" icon="el-icon-aim"> </el-button>
       </div>
       <!-- 수선집 목록 -->
       <modal-view-m>
         <div slot="open-title">
-          <div class="tal">
-            <p class="fs_24 mb_16">
+          <el-row class="tal">
+            <p class="fs_24">
               <span class="fw_600">{{ addressString }}</span>
               근처의
               <br />
               수선집을 추천하고 있어요!
             </p>
-          </div>
+          </el-row>
         </div>
         <div slot="open">
           <recommend :alteration-shop-list="altreationShopList" @click-shop="selectAlterationShop"></recommend>
@@ -65,10 +60,10 @@
 
 <script>
 import axios from 'axios';
-import { getAlterationShopList, getTagList } from '@/api/alteration-shop';
+import { getAlterationShopList } from '@/api/alteration-shop';
 import Recommend from './components/Recommend';
 import DistanceTune from './components/DistanceTune';
-import ModalViewM from '../../components/ModalSlideUp';
+import ModalViewM from '../components/ModalSlideUp';
 import AlteraionShopDetailPopup from './popup/AlteraionShopDetailPopup';
 import SearchPopup from './popup/SearchPopup';
 
@@ -90,8 +85,8 @@ export default {
       width: null,
       height: 300,
       map: null,
-      latitude,
-      longitude,
+      mapLatitude: latitude,
+      mapLongitude: longitude,
       mapOptions: {
         lat: latitude,
         lng: longitude,
@@ -102,9 +97,6 @@ export default {
         scaleControl: false,
       },
       initLayers: ['BACKGROUND', 'BACKGROUND_DETAIL', 'POI_KOREAN', 'TRANSIT', 'ENGLISH', 'CHINESE', 'JAPANESE'],
-      // 상단 버튼 관련 필드
-      selectedTagBtn: 0,
-      tagList: [],
       // 수선집 목록
       altreationShopList: [],
       // 현재 클릭한 수선집 id
@@ -121,6 +113,11 @@ export default {
       openShopList: false,
     };
   },
+  computed: {
+    curPos() {
+      return this.$store.getters.curPos;
+    },
+  },
   methods: {
     /**
      * 지도가 로드되면 수행
@@ -128,8 +125,6 @@ export default {
      */
     onLoad(map) {
       this.map = map;
-      // 태그 목록 조회
-      this.loadTagList();
       // 현 위치 설정
       this.setCurrentPosition();
     },
@@ -138,8 +133,10 @@ export default {
      */
     loadAlterationShopList() {
       const params = {
-        longitude: this.longitude,
-        latitude: this.latitude,
+        mapLongitude: this.mapLongitude,
+        mapLatitude: this.mapLatitude,
+        curLongitude: this.curPos.longitude,
+        curLatitude: this.curPos.latitude,
         distance: this.distance * 1000,
       };
       getAlterationShopList(params)
@@ -147,21 +144,6 @@ export default {
           const result = data.data;
           if (result.success) {
             this.altreationShopList = result.data;
-          }
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
-    },
-    /**
-     * 태그 목록을 조회한다.
-     */
-    loadTagList() {
-      getTagList()
-        .then((data) => {
-          const result = data.data;
-          if (result.success) {
-            this.tagList = result.data;
           }
         })
         .catch((err) => {
@@ -186,8 +168,12 @@ export default {
       this.getCurrentPosition()
         .then((pos) => {
           // 마커 위치
-          this.latitude = pos.coords.latitude;
-          this.longitude = pos.coords.longitude;
+          this.mapLatitude = pos.coords.latitude;
+          this.mapLongitude = pos.coords.longitude;
+          this.$store.dispatch('setCurPos', {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          });
           // 지도 위치
           this.setMapPosition();
         })
@@ -206,7 +192,7 @@ export default {
      * 현재 설정된 위경도 정보로 지도 위치를 설정한다.
      */
     setMapPosition() {
-      this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
+      this.map.setCenter(new naver.maps.LatLng(this.mapLatitude, this.mapLongitude));
     },
     /**
      * 좌표를 주소로 변환한다.
@@ -219,10 +205,7 @@ export default {
             'X-NCP-APIGW-API-KEY': 'CqEzG5y5swiaYpXOX1Yo7dgdvMlAdlwAGjfwBwiq',
           },
           params: {
-            coords: `${this.longitude},${this.latitude}`,
-            // coords: '128.196087,37.1343799',
-            // coords: '127.459223,36.6283933',
-            // coords: '127.344345,36.3696542',
+            coords: `${this.mapLongitude},${this.mapLatitude}`,
             output: 'json',
             orders: 'admcode',
           },
@@ -242,24 +225,22 @@ export default {
      * 버튼 클래스 반환
      */
     buttonClass(idx) {
-      return this.selectedTagBtn === idx ? 'selected' : '';
+      return this.selectedTagBtns.some((item) => item === idx) ? 'selected-btn' : '';
     },
     /**
      * 수선집 선택한 경우 탭 변경
      */
     selectAlterationShop(item) {
-      const param = {
+      const params = {
         alterationShopId: item.alterationShopId,
-        latitude: this.latitude,
-        longitude: this.longitude,
       };
-      this.$emit('change-tab', 'alterationShop', param);
+      this.$refs.detailPopup.open(params);
     },
     /**
      * 설정한 거리 변경 핸들러
      */
     changeDistance(value) {
-      this.map.setCenter(new naver.maps.LatLng(this.latitude, this.longitude));
+      this.map.setCenter(new naver.maps.LatLng(this.mapLatitude, this.mapLongitude));
       this.distance = value;
       this.mapOptions.zoom = 16 - Math.floor(this.distance * 0.5);
       this.map.setOptions(this.mapOptions);
@@ -285,8 +266,8 @@ export default {
           if (data.status === 'OK') {
             const address = data.addresses[0];
             // 마커 위치
-            this.latitude = Number(address.y);
-            this.longitude = Number(address.x);
+            this.mapLatitude = Number(address.y);
+            this.mapLongitude = Number(address.x);
             // 지도 위치
             this.setMapPosition();
           }
@@ -303,17 +284,27 @@ export default {
         });
     },
     /**
-     * 태그를 클릭한다.
-     */
-    clickTag(tagId) {
-      if (this.selectedTagBtn == tagId) this.selectedTagBtn = 0;
-      else this.selectedTagBtn = tagId;
-    },
-    /**
      * 검색 팝업을 연다.
      */
     openSearchPopup() {
       this.$refs.searchPopup.open();
+    },
+    /**
+     * 현위치에서 수선집 목록을 새로고침한다.
+     */
+    refreshAlterationShop() {
+      const point = this.map.getCenter();
+      const latlng = naver.maps.TransCoord.fromTM128ToLatLng(point);
+      this.mapLatitude = latlng.y;
+      this.mapLongitude = latlng.x;
+      this.loadAlterationShopList();
+    },
+    /**
+     * 모든 팝업을 닫는다.
+     */
+    closePopups() {
+      this.$refs.searchPopup.closePopup();
+      this.$refs.detailPopup.closePopup();
     },
   },
 };
@@ -329,6 +320,7 @@ export default {
   position: absolute;
   z-index: 999;
   width: 100%;
+  top: 45px;
   padding: 1em;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgb(255, 255, 255, 0.1));
 }
@@ -377,9 +369,20 @@ export default {
   width: 100vw;
 }
 .main .my-place {
-  z-index: 999;
   position: absolute;
-  bottom: 90px;
+  z-index: 999;
+  top: 107px;
+  right: 16px;
+  background-color: #fff;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  color: black;
+  height: 38px;
+  border-radius: 50px;
+}
+.main .refresh {
+  position: absolute;
+  z-index: 999;
+  top: 157px;
   right: 16px;
   background-color: #fff;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
@@ -395,7 +398,7 @@ export default {
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
   height: 28px;
 }
-.selected {
+.selected-btn {
   border: none;
   color: white;
   background: var(--maincolor) !important;

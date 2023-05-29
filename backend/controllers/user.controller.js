@@ -21,10 +21,14 @@ const userContorller = {
      */
     updateUser: async (req, res) => {
         const userInfo = req.body;
-        await UserService.updateUser(userInfo);
+        const email = req.user.userEmail;
+        await UserService.updateUser(userInfo, email);
+        const data = await UserService.getUserByEmail(email);
+        delete data.password;
         const result = new Result();
         result.success = true;
-        res.status(200).send(result);
+        result.data = data;
+        res.send(result);
     },
     /**
      * 중복되는 이메일인지 여부를 조회한다. (true: 중복, false: 중복X)
@@ -56,12 +60,12 @@ const userContorller = {
         if(req.isAuthenticated()) {
             return res.redirect('/');
         }
-        const result = new Result();
         passport.authenticate('local', (authError, user, info) => {
             if(authError) {
                 return next(authError);
             }
             if(!user) {
+                const result = new Result();
                 result.message = info;
                 return res.send(result);
             }
@@ -69,9 +73,7 @@ const userContorller = {
                 if(loginError) {
                     return next(loginError);
                 }
-                result.success = true;
-                result.data = user;
-                return res.send(result);
+                return res.send(user);
             });
         })(req, res, next);
     },
@@ -146,6 +148,32 @@ const userContorller = {
             result.data = await UserService.getBookmarkPlace(email);
         }
         return res.send(result);
+    },
+    /**
+     * 즐겨찾는 장소의 최대 아이디 값을 구한다. (새 장소 추가 시 사용)
+     */
+    getBookmarkPlaceMaxId: async(req, res, next) => {
+        const result = new Result();
+        result.success = true;
+        result.data = await UserService.getBookmarkPlaceMaxId();
+        return res.send(result);
+    },
+    /**
+     * 즐겨찾는 장소를 수정한다한다.
+     */
+    updateBookmarkPlace: async(req, res, next) => {
+        const result = new Result();
+        if(req.isAuthenticated() && req.user) {
+            const email = req.user.userEmail;
+            const addList = req.body.addList;
+            await UserService.addBookmarkPlace(addList, email);
+            const editList = req.body.editList;
+            await UserService.editBookmarkPlace(editList);
+            const delList = req.body.delList;
+            await UserService.deleteBookmarkPlace(delList);
+            result.success = true;
+        }
+        res.status(200).send(result);
     },
 };
 

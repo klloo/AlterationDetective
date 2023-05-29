@@ -4,26 +4,14 @@ const { cloneDeep, isEmpty, isNil } = require('lodash');
 
 const shopService = {
     /**
-     * 수선집 태그 목록을 조회한다.
-     */
-    getTagList: () => new Promise ((resolve, reject) => {
-        connection('tag')
-        .select('tag_id AS tagId', 'tag_name AS tagName')
-        .then((data) => {
-            resolve(data);
-        }).catch((err) => {
-            reject(err);
-        });
-    }),
-    /**
      * 수선집 목록을 조회한다.
      */
     getAlterationShopList: (params) => new Promise ((resolve, reject) => {
-        const queryParams = [params.longitude, params.latitude, params.userId];
+        const queryParams = [params.mapLongitude, params.mapLatitude, params.curLongitude, params.curLatitude, params.userId];
         const subQuery = connection.raw(`(${AlterationShopQuery.selectAlterationShopList}) shop`, queryParams);
         const basicQuery = connection(subQuery).select('*');
         if(!isNil(params.distance)) {
-            basicQuery.where('dist', '<' , params.distance);
+            basicQuery.where('mapDist', '<' , params.distance);
         }
         if(!isNil(params.keyword)) {
             const keyword = "%" + params.keyword + "%";
@@ -44,18 +32,6 @@ const shopService = {
         connection.raw(AlterationShopQuery.selectAlterationShopDetailInfo, queryParams)
         .then((data) => {
             const result = cloneDeep(data[0][0]);
-            const tagList = [];
-            data[0].forEach(item => {
-                if(!isNil(item.tagId)) {
-                    tagList.push({
-                        tagId: item.tagId,
-                        tagName: item.tagName,
-                    });
-                }
-            });
-            if(!isEmpty(tagList)) {
-                result.tagList = tagList;
-            }
             resolve(result);
         })
         .catch((err) => {
@@ -79,7 +55,9 @@ const shopService = {
             // 좋아요가 존재하므로 delete
             if (count > 0) {
                 connection('shop_like')
-                .delete(params)
+                .where('user_id', userId)
+                .andWhere('alteration_shop_id', alterationShopId)
+                .delete()
                 .then(() => {
                     resolve();
                 })
@@ -97,6 +75,21 @@ const shopService = {
                     reject(e);
                 });
             }
+        }).catch((err) => {
+            reject(err);
+        });
+    }),
+    /**
+     * 좋아요한 수선집 목록을 조회한다.
+     */
+    getLikeShopList: (params) => new Promise ((resolve, reject) => {
+        const queryParams = [params.mapLongitude, params.mapLatitude, params.curLongitude, params.curLatitude, params.userId];
+        const subQuery = connection.raw(`(${AlterationShopQuery.selectAlterationShopList}) shop`, queryParams);
+        const basicQuery = connection(subQuery).select('*');
+        basicQuery.where('likeFlag', true);
+        basicQuery
+        .then((data) => {
+            resolve(data);
         }).catch((err) => {
             reject(err);
         });

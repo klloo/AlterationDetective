@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import Popup from '../../components/popup';
+import Popup from '../components/popup';
 import { isNil } from 'lodash';
 import { sendAuthMail, registerUser } from '@/api/user';
 import { validatePassword, validateUsername, validateDuplicatedEmail } from '@/utils/validation';

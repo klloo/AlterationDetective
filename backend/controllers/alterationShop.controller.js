@@ -3,16 +3,6 @@ const Result = require('../models/result');
 
 const alterationShopContorller = {
     /**
-     * 수선집 태그 목록을 조회한다.
-     */
-    getTagList: async (req, res) => {
-        const data = await AlterationShopService.getTagList();
-        const result = new Result();
-        result.success = true;
-        result.data = data;
-        res.send(result);
-    },
-    /**
      * 수선집 목록을 조회한다.
      */
     getAlterationShopList: async (req, res) => {
@@ -20,8 +10,10 @@ const alterationShopContorller = {
         if(req.isAuthenticated() && req.user) {
             const params = {
                 userId: req.user.userEmail,
-                latitude: req.body.latitude || 37,
-                longitude: req.body.longitude || 127,
+                mapLatitude: req.body.mapLatitude || 37,
+                mapLongitude: req.body.mapLongitude || 127,
+                curLatitude: req.body.curLatitude || 37,
+                curLongitude: req.body.curLongitude || 127,
                 distance: req.body.distance,
                 keyword: req.body.keyword,
             };
@@ -63,6 +55,25 @@ const alterationShopContorller = {
             result.data = data;
         }
         res.send(result);
+     },
+     /**
+      * 좋아요한 수선집 목록을 조회한다.
+      */
+     getLikeShopList: async (req, res) => {
+         const result = new Result();
+         if(req.isAuthenticated() && req.user) {
+             const params = {
+                 userId: req.user.userEmail,
+                 mapLatitude: req.body.mapLatitude || 37,
+                 mapLongitude: req.body.mapLongitude || 127,
+                 curLatitude: req.body.curLatitude,
+                 curLongitude: req.body.curLongitude,
+             };
+             const data = await AlterationShopService.getLikeShopList(params);
+             result.success = true;
+             result.data = data;
+         }
+         res.send(result);
      },
 };
 
