@@ -163,6 +163,20 @@ const userService = {
         .catch((e) => {
             reject(e);
         });
+    }),
+    /**
+     * 회원을 삭제한다.
+     */
+    deleteUser: (userEamil) => new Promise ((resolve, reject) => {
+        connection('user')
+        .where('user_email', userEamil)
+        .del()
+        .then(() => {
+            resolve();
+        })
+        .catch((e) => {
+            reject(e);
+        });
     })
 };     
 

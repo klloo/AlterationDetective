@@ -105,14 +105,14 @@
           <el-form-item prop="userEmail">
             <el-input prefix-icon="el-icon-message" placeholder="name@email.com" v-model="formData.userEmail" disabled></el-input>
           </el-form-item>
+          <el-form-item prop="username">
+            <el-input prefix-icon="el-icon-user" placeholder="닉네임을 입력해주세요" v-model="formData.username"></el-input>
+          </el-form-item>
           <el-form-item prop="password">
             <el-input prefix-icon="el-icon-key" type="password" placeholder="비밀번호를 입력하세요" v-model="formData.password"></el-input>
           </el-form-item>
           <el-form-item prop="passwordRe">
             <el-input prefix-icon="el-icon-key" type="password" placeholder="비밀번호를 한번 더 입력하세요" v-model="formData.passwordRe"></el-input>
-          </el-form-item>
-          <el-form-item prop="username">
-            <el-input prefix-icon="el-icon-user" placeholder="닉네임을 입력해주세요" v-model="formData.username"></el-input>
           </el-form-item>
         </el-form>
         <button class="button_w100 mt_32 mb_40 blue color_w" @click="checkUserFormValidate">회원가입</button>

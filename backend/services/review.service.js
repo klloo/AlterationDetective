@@ -6,7 +6,7 @@ const reviewService = {
      */
     getAlterationShopReviewList: (alterationShopId) => new Promise ((resolve, reject) => {
         connection('review as r')
-        .select('review_id AS reviewId', 'alteration_shop_id AS alterationShopId', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime')
+        .select('review_id AS reviewId', 'alteration_shop_id AS alterationShopId', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'image')
         .join('user', 'user.user_email', '=', 'r.user_email')
         .where('alteration_shop_id', alterationShopId)
         .orderBy('create_datetime')
@@ -21,7 +21,7 @@ const reviewService = {
      */
     getAlterationShopUserReviewList: (userEmail) => new Promise ((resolve, reject) => {
         connection('review as r')
-        .select('review_id AS reviewId', 'r.alteration_shop_id AS alterationShopId', 'shop.alteration_shop_name as alterationShopName', 'shop.address', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime')
+        .select('review_id AS reviewId', 'r.alteration_shop_id AS alterationShopId', 'shop.alteration_shop_name as alterationShopName', 'shop.address', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'image')
         .join('user', 'user.user_email', '=', 'r.user_email')
         .join('alteration_shop as shop', 'shop.alteration_shop_id', '=', 'r.alteration_shop_id')
         .where('user.user_email', userEmail)

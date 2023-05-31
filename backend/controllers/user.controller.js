@@ -3,7 +3,10 @@ const UserService = require('../services/user.service');
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
+const isEmpty = require('lodash/isEmpty');
+const bcrypt = require('bcrypt');
 const Result = require('../models/result');
+const e = require('express');
 
 const userContorller = {
     /**
@@ -21,7 +24,11 @@ const userContorller = {
      */
     updateUser: async (req, res) => {
         const userInfo = req.body;
-        const email = req.user.userEmail;
+        let email;
+        if(req.isAuthenticated())
+            email = req.user.userEmail;
+        else 
+            email = req.body.userEmail;
         await UserService.updateUser(userInfo, email);
         const data = await UserService.getUserByEmail(email);
         delete data.password;
@@ -51,6 +58,7 @@ const userContorller = {
             result.data = req.user;
             return res.send({ user: req.user });
         }
+        result.data = {};
         return res.send(result);
     },
     /**
@@ -174,6 +182,49 @@ const userContorller = {
             result.success = true;
         }
         res.status(200).send(result);
+    },
+    /**
+     * 로그인한 사용자의 비밀번호가 맞는지 확인한다.
+     */
+    checkPassword: async (req, res, next) => {
+        const result = new Result();
+        if (!req.isAuthenticated()) 
+            return res.send(result);
+        const email = req.user.userEmail;
+        // email로 사용자 정보 가져오기
+        const user = await UserService.getUserByEmail(email);
+        // email이 없는 경우
+        if(isEmpty(user)) {
+            result.message ="가입되지 않은 회원입니다.";
+            return res.send(result);
+        }
+        const encodedPassword = user.password;
+        const same = await bcrypt.compare(req.body.password, encodedPassword);
+        result.success = true;
+        if(same) 
+            result.data = true;
+        else 
+            result.data = false;
+        return res.send(result);
+    },
+    /**
+     * 로그인한 사용자 정보를 삭제한다.
+     */
+    deleteUser: async(req, res, next) => {
+        const result = new Result();
+        if(req.isAuthenticated() && req.user) {
+            const email = req.user.userEmail;
+            await UserService.deleteUser(email);
+            req.logout((err) => {
+                req.session.destroy();
+                if(err) res.redirect('/');
+                const result = new Result();
+                result.success = true;
+                res.status(200).send(result);
+            });
+        }
+        else
+            res.status(200).send(result);
     },
 };
 
