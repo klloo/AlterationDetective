@@ -32,7 +32,7 @@
   </popup>
 </template>
 <script>
-import Popup from '../../components/popup';
+import Popup from '../components/popup';
 import { isNil } from 'lodash';
 import { updateUser } from '@/api/user';
 import { validatePassword, validateExistEmail } from '@/utils/validation';
@@ -67,6 +67,8 @@ export default {
               if (!isNil(this.formData.password) && !isNil(value)) {
                 if (this.formData.password != value) {
                   callback(new Error('비밀번호가 일치하지 않습니다.'));
+                } else {
+                  callback();
                 }
               } else {
                 callback();

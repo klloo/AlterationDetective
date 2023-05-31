@@ -110,7 +110,9 @@ body {margin: 0;}
 
 .fs_12 {font-size: 12px; line-height: 1.5;}
 .fs_14 {font-size: 14px; line-height: 1.5;}
+.fs_15 {font-size: 15px; line-height: 1.5;}
 .fs_16 {font-size: 16px; line-height: 1.5;}
+.fs_18 {font-size: 18px; line-height: 1.5;}
 .fs_20 {font-size: 20px !important; line-height: 1.5;}
 .fs_24 {font-size: 24px; line-height: 1.5;}
 .fs_28 {font-size: 28px; line-height: 1.5;}
@@ -234,7 +236,7 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25%;
+  width: 50%;
   height: 64px;
   background-color: #fff;
 }
@@ -279,4 +281,17 @@ input[type=text], input[type=password], input[type=email], input[type=file] {wid
 }
 .el-tag .el-tag__close:hover {
 	background-color: white !important;
+}
+.el-button:focus, .el-button:hover {
+    color: #303133 !important;
+    border-color: #ebeef5 !important;
+    background-color: #fff !important;
+}
+.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+	background-color:var(--maincolor) !important;
+	border-color:var(--maincolor) !important;
+	-webkit-box-shadow: none !important;
+}
+.el-select-dropdown__item.selected {
+	color:var(--maincolor) !important;
 }

@@ -6,7 +6,11 @@ const getters = {
   /**
    * 최근 키워드
    */
-  recentKeywords: (state) => state.keyword.recentKeywords
+  recentKeywords: (state) => state.keyword.recentKeywords,
+  /**
+   * 현위치
+   */
+  curPos: (state) => state.user.curPos,
 }
 
 export default getters;

@@ -33,3 +33,11 @@ export function checkDuplicatedEmail(params) {
 export function getBookmarkPlace() {
     return axios.get(`${PREFIX_URL}/get-bookmark-place`);
 }
+
+export function getBookmarkPlaceMaxId() {
+    return axios.get(`${PREFIX_URL}/get-bookmark-place-max-id`);
+}
+
+export function updateBookmarkPlace(params) {
+    return axios.post(`${PREFIX_URL}/update-bookmark-place`, params);
+}

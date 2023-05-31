@@ -11,7 +11,7 @@
 /* .overlay_m {background-color: rgba(0, 0, 0, 0.5);} */
 .modal_card_m {
     position: fixed;
-    bottom: 63px;
+    bottom: 5px;
     left: 0;
     right: 0;
     width: 100%;

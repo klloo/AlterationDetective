@@ -2,7 +2,7 @@
   <div>
     <div class="mt_100" v-if="isEmpty(alterationShopList)">추천 수선집이 없어요 ㅜ_ㅜ</div>
     <div v-for="(shop, index) in alterationShopList" :key="index" class="mb_16" @click="$emit('click-shop', shop)">
-      <el-card>
+      <el-card shadow="never">
         <span class="RECOMMEND"></span>
         <p class="fw_700 tal title">
           {{ shop.alterationShopName }}
@@ -17,7 +17,7 @@
             <span>리뷰</span>
             <span>&nbsp;{{ shop.reviewCount }}</span
             ><el-divider direction="vertical"></el-divider>
-            <el-rate :value="shop.starRate" show-score disabled />
+            <el-rate :value="starRateFormatter(shop.starRate)" show-score disabled />
           </div>
           <span :class="shop.likeFlag ? 'LIKE_BLUE' : 'LIKE_GRAY'" @click.stop="toggleLike(shop.alterationShopId)"></span>
         </div>
@@ -28,7 +28,7 @@
 <script>
 import { find, isEmpty } from 'lodash';
 import { toggleShopLike } from '@/api/alteration-shop';
-import { distFormatter } from '@/utils/formatter';
+import { distFormatter, starRateFormatter } from '@/utils/formatter';
 
 export default {
   name: 'Recommend',
@@ -48,6 +48,7 @@ export default {
   methods: {
     isEmpty,
     distFormatter,
+    starRateFormatter,
     toggleLike(alterationShopId) {
       const targetShop = find(this.alterationShopList, (item) => {
         if (item.alterationShopId === alterationShopId) return item;

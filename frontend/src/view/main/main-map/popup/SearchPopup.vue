@@ -1,13 +1,13 @@
 <template>
-  <popup ref="popup" title="검색" @closed="initData" type="search">
+  <popup ref="popup" @closed="initData">
     <div slot="content">
-      <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" />
+      <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" @change-keyword="changeKeyword" />
       <div class="search-bottom">
         <div v-show="!showResult">
           <div class="tal mt_8">
             <div class="d_flex justify_between">
               <span class="sub-title">최근 검색어</span>
-              <span class="underline-text" @click="deleteAllKeyword">전체 삭제</span>
+              <span class="delete-all-button" @click="deleteAllKeyword">전체 삭제</span>
             </div>
             <div v-show="isEmpty(recentKeywords)" class="mt_32 d_flex justify_center">
               최근 검색어가 없습니다.
@@ -26,84 +26,54 @@
             </ul>
           </div>
           <div class="mt_40">
-            <div class="d_flex justify_between">
-              <span class="sub-title">즐겨찾는 장소</span>
-              <span class="underline-text">편집</span>
-            </div>
-            <el-card
-              class="mt_12 box-card tal"
-              shadow="none"
-              v-for="place in bookmarkPlace"
-              :key="place.placeId"
-              @click.native="selectAddr(place.address)"
-            >
-              <el-row>
-                <el-col :span="2">
-                  <i :class="place.iconClass" style="color: var(--maincolor);" />
-                </el-col>
-                <el-col :span="20">
-                  <p class="place-name">{{ place.placeName }}</p>
-                  <p class="jibun-addr">{{ place.address }}</p>
-                </el-col>
-              </el-row>
-            </el-card>
+            <book-mark-place ref="bookmarkPlace" @select-addr="selectAddr" />
           </div>
         </div>
         <div v-show="showResult">
           <el-tabs v-model="activeTab">
             <el-tab-pane label="주소" name="address">
-              <div v-show="isEmpty(addrList)" class="mt_32 d_flex justify_center">
-                검색 결과가 없습니다.
-              </div>
-              <ul class="mt_8 tal scrollable">
-                <li v-for="(addr, index) in addrList" :key="index" @click="selectAddr(addr.roadAddr)">
-                  <el-row>
-                    <el-col :span="2">
-                      <i class="el-icon-location" style="color: var(--maincolor);" />
-                    </el-col>
-                    <!-- 도로명 주소 -->
-                    <el-col :span="20">
-                      <div class="road-addr">
-                        {{ addr.roadAddr }}
-                      </div>
-                      <!-- 지번 주소 -->
-                      <div class="jibun-addr">{{ addr.jibunAddr }}</div>
-                    </el-col>
-                  </el-row>
-                  <el-divider></el-divider>
-                </li>
-              </ul>
+              <addr-list-component :addrList="addrList" @select-addr="selectAddr"></addr-list-component>
             </el-tab-pane>
             <el-tab-pane label="매장" name="shop">
               <div v-show="isEmpty(shopList)" class="mt_32 d_flex justify_center">
                 검색 결과가 없습니다.
               </div>
-              <ul class="mt_8">
+              <ul class="mt_8 tal scrollable">
                 <li class="mb_8" v-for="(shop, index) in shopList" :key="index" @click="selectShop(shop)">
-                  <div>{{ shop.alterationShopName }}</div>
-                  <div>{{ shop.address }}</div>
-                  <hr />
+                  <el-row>
+                    <!-- 가게 이름 -->
+                    <div class="road-addr">{{ shop.alterationShopName }}</div>
+                    <!-- 가게 주소 -->
+                    <div class="jibun-addr">{{ shop.address }}</div>
+                  </el-row>
+                  <el-divider v-if="index != shopList.length - 1"></el-divider>
                 </li>
               </ul>
             </el-tab-pane>
           </el-tabs>
         </div>
       </div>
+      <add-bookmark-place-popup ref="addBookmarkPlacePopup" />
     </div>
   </popup>
 </template>
 
 <script>
-import '@/assets/css/modal.m.css';
-import { getBookmarkPlace } from '@/api/user';
-import Popup from '../../../components/popup';
 import { isEmpty } from 'lodash';
+import { getBookmarkPlace } from '@/api/user';
+import Popup from '../../components/popup';
+import AddBookmarkPlacePopup from './AddBookmarkPlacePopup';
 import AddressShopSearch from '@/view/main/components/AddressShopSearch';
+import AddrListComponent from '../components/AddrListComponent';
+import BookMarkPlace from './BookMarkPlace';
 
 export default {
   components: {
     Popup,
     AddressShopSearch,
+    AddBookmarkPlacePopup,
+    BookMarkPlace,
+    AddrListComponent,
   },
   name: 'SearchPopup',
   data() {
@@ -121,14 +91,6 @@ export default {
     },
     recentKeywords() {
       return this.$store.getters.recentKeywords;
-    },
-  },
-  watch: {
-    addrList() {
-      this.showResult = !isEmpty(this.keyword);
-    },
-    shopList() {
-      this.showResult = !isEmpty(this.keyword);
     },
   },
   methods: {
@@ -166,6 +128,7 @@ export default {
      */
     initData() {
       this.$refs.search.initData();
+      this.$refs.bookmarkPlace.initData();
       this.addrList = [];
       this.shopList = [];
     },
@@ -215,17 +178,32 @@ export default {
         });
     },
     /**
+     * 편집 버튼을 클릭한다.
+     */
+    clickEditBtn() {
+      this.$refs.addBookmarkPlacePopup.open();
+    },
+    /**
      * 팝업을 연다.
      */
     open() {
       this.$refs.popup.open();
-      this.loadBookmarkPlace();
+      this.$nextTick(() => {
+        this.$refs.bookmarkPlace.loadBookmarkPlace();
+      });
     },
     /**
      * 팝업을 닫는다.
      */
     closePopup() {
       this.$refs.popup.close();
+    },
+    /**
+     * 검색 컴포넌트에서 키워드가 바뀔 때 호출되는 함수
+     */
+    changeKeyword(keyword) {
+      this.showResult = !isEmpty(keyword);
+      if (this.showResult) this.$refs.bookmarkPlace.initData();
     },
   },
 };
@@ -236,5 +214,15 @@ export default {
 .place-add-btn {
   height: inherit;
   width: 100%;
+}
+.delete-all-button {
+  height: 20px;
+  width: 70px;
+  font-size: 13px;
+  border: 1px solid rgb(225, 225, 225);
+  border-radius: 30px;
+  text-align: center;
+  padding-top: 3px;
+  color: rgb(89, 89, 89);
 }
 </style>
