@@ -17,6 +17,12 @@
     </div>
     <el-divider></el-divider>
     <el-form :model="review" :rules="rules" ref="reviewForm">
+      <el-form-item prop="imageUrl">
+        <el-upload class="image-uploader" action="/api/review/upload-image" :show-file-list="false" :on-success="handleAvatarSuccess">
+          <img v-if="!isEmpty(review.imageUrl)" :src="review.imageUrl" class="image" />
+          <i v-else class="el-icon-plus image-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
       <el-form-item prop="starRate">
         <el-rate v-model="review.starRate" show-score allow-half />
       </el-form-item>
@@ -43,7 +49,7 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { registerReview } from '@/api/review';
 
 export default {
@@ -55,6 +61,8 @@ export default {
         alterationShopId: -1,
         starRate: 5,
         content: '',
+        imageUrl: '',
+        fileName: '',
       },
       shopInfo: {},
       rules: {
@@ -63,6 +71,7 @@ export default {
     };
   },
   methods: {
+    isEmpty,
     /**
      * 팝업을 연다.
      */
@@ -87,6 +96,8 @@ export default {
         alterationShopId: -1,
         starRate: 5,
         content: '',
+        imageUrl: '',
+        fileName: '',
       };
     },
     /**
@@ -135,6 +146,10 @@ export default {
           throw new Error(err);
         });
     },
+    handleAvatarSuccess(res, file) {
+      this.review.fileName = file.name;
+      this.review.imageUrl = URL.createObjectURL(file.raw);
+    },
   },
 };
 </script>
@@ -147,5 +162,25 @@ export default {
 .shop-name {
   margin-bottom: 3px;
   font-size: 18px;
+}
+.image-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.image-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
+}
+.image {
+  width: 100%;
+  height: 200px;
+  display: block;
 }
 </style>
