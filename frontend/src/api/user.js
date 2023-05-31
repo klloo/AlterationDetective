@@ -41,3 +41,11 @@ export function getBookmarkPlaceMaxId() {
 export function updateBookmarkPlace(params) {
     return axios.post(`${PREFIX_URL}/update-bookmark-place`, params);
 }
+
+export function checkPassword(params) {
+    return axios.post(`${PREFIX_URL}/check-password`, params);
+}
+
+export function deleteUser() {
+    return axios.delete(`${PREFIX_URL}/delete-user`);
+}
