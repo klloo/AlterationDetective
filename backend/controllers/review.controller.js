@@ -1,5 +1,7 @@
 const reviewService = require('../services/review.service');
 const Result = require('../models/result');
+const multer = require('multer');
+const isNil = require('lodash/isNil');
 
 const reviewContorller = {
     /**
@@ -52,10 +54,28 @@ const reviewContorller = {
     deleteReview: async (req, res) => {
         const result = new Result();
         const reviewId = req.body.reviewId;
+        const review = await reviewService.getAlterationShopReview(reviewId);
+        if (!isNil(review.file_name))
+            await reviewService.deleteReviewImage(review.file_name);
         await reviewService.deleteAlterationShopReview(reviewId);
         result.success = true;
         res.status(200).send(result);
-    },    
+    },  
+    /**
+     * 리뷰 이미지를 업로드한다.
+     */
+    uploadImage: (req, res, next) => {
+        res.status(204).send();
+    },
+    // 파일 저장 경로와 파일 이름 설정하여 multer 미들웨어 설정
+    upload: multer({ storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'public/image');
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.originalname);
+        }}),
+    }),
 };
 
 module.exports = reviewContorller;

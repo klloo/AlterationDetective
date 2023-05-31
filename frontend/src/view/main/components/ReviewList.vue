@@ -40,7 +40,7 @@
           </el-col>
         </el-row>
         <el-row class="mt_16 ml_4">
-          <span class="RECOMMEND"></span>
+          <img v-if="!isEmpty(review.image)" :src="review.image" class="review-img" />
           <p class="tal mb_32">{{ review.content }}</p>
         </el-row>
       </div>
@@ -140,10 +140,9 @@ export default {
 </script>
 
 <style lang="css">
-.RECOMMEND {
+.review-img {
   display: block;
   width: 100%;
-  height: 136px;
   margin-bottom: 16px;
 }
 .delete-button {
