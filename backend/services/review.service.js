@@ -7,10 +7,10 @@ const reviewService = {
      */
     getAlterationShopReviewList: (alterationShopId) => new Promise ((resolve, reject) => {
         connection('review as r')
-        .select('review_id AS reviewId', 'alteration_shop_id AS alterationShopId', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'r.image')
+        .select('review_id AS reviewId', 'alteration_shop_id AS alterationShopId', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'r.image_file_name as imageFileName')
         .join('user', 'user.user_email', '=', 'r.user_email')
         .where('alteration_shop_id', alterationShopId)
-        .orderBy('create_datetime')
+        .orderBy('create_datetime', 'desc')
         .then((data) => {
             resolve(data);
         }).catch((err) => {
@@ -22,11 +22,11 @@ const reviewService = {
      */
     getAlterationShopUserReviewList: (userEmail) => new Promise ((resolve, reject) => {
         connection('review as r')
-        .select('review_id AS reviewId', 'r.alteration_shop_id AS alterationShopId', 'shop.alteration_shop_name as alterationShopName', 'shop.address', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'r.image')
+        .select('review_id AS reviewId', 'r.alteration_shop_id AS alterationShopId', 'shop.alteration_shop_name as alterationShopName', 'shop.address', 'r.user_email AS userEmail', 'user.username', 'title', 'content', 'star_rate AS starRate', 'create_datetime AS createDatetime', 'r.image_file_name as imageFileName')
         .join('user', 'user.user_email', '=', 'r.user_email')
         .join('alteration_shop as shop', 'shop.alteration_shop_id', '=', 'r.alteration_shop_id')
         .where('user.user_email', userEmail)
-        .orderBy('create_datetime')
+        .orderBy('create_datetime', 'desc')
         .then((data) => {
             resolve(data);
         }).catch((err) => {
@@ -43,8 +43,7 @@ const reviewService = {
             content: review.content,
             star_rate: review.starRate,
             create_datetime: new Date(),
-            image: review.imageUrl,
-            file_name: review.fileName,
+            image_file_name: review.imageFileName,
         }
         connection('review')
         .insert(item)
@@ -84,7 +83,6 @@ const reviewService = {
      * 수선집 리뷰 사진 파일을 삭제한다.
      */
     deleteReviewImage: (fileName) => new Promise ((resolve, reject) => {
-        console.log(fileName);
         const filePath = `public/image/${fileName}`;
         fs.unlink(filePath, (err) => {
           if (err) {

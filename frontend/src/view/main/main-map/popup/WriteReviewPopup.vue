@@ -17,9 +17,9 @@
     </div>
     <el-divider></el-divider>
     <el-form :model="review" :rules="rules" ref="reviewForm">
-      <el-form-item prop="imageUrl">
+      <el-form-item prop="imageFileName">
         <el-upload class="image-uploader" action="/api/review/upload-image" :show-file-list="false" :on-success="handleAvatarSuccess">
-          <img v-if="!isEmpty(review.imageUrl)" :src="review.imageUrl" class="image" />
+          <img v-if="!isEmpty(imageUrl)" :src="imageUrl" class="image" />
           <i v-else class="el-icon-plus image-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -61,9 +61,9 @@ export default {
         alterationShopId: -1,
         starRate: 5,
         content: '',
-        imageUrl: '',
-        fileName: '',
+        imageFileName: '',
       },
+      imageUrl: '',
       shopInfo: {},
       rules: {
         content: [{ required: true, message: '내용을 입력해주세요.', trigger: 'blur' }],
@@ -96,9 +96,9 @@ export default {
         alterationShopId: -1,
         starRate: 5,
         content: '',
-        imageUrl: '',
-        fileName: '',
+        imageFileName: '',
       };
+      this.imageUrl = '';
     },
     /**
      * 저장 버튼을 클릭한다.
@@ -147,8 +147,8 @@ export default {
         });
     },
     handleAvatarSuccess(res, file) {
-      this.review.fileName = file.name;
-      this.review.imageUrl = URL.createObjectURL(file.raw);
+      this.review.imageFileName = file.name;
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
   },
 };

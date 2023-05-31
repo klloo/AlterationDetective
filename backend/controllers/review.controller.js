@@ -55,8 +55,8 @@ const reviewContorller = {
         const result = new Result();
         const reviewId = req.body.reviewId;
         const review = await reviewService.getAlterationShopReview(reviewId);
-        if (!isNil(review.file_name))
-            await reviewService.deleteReviewImage(review.file_name);
+        if (!isNil(review.image_file_name))
+            await reviewService.deleteReviewImage(review.image_file_name);
         await reviewService.deleteAlterationShopReview(reviewId);
         result.success = true;
         res.status(200).send(result);

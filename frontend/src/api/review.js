@@ -17,3 +17,7 @@ export function registerReview(params) {
 export function deleteReview(params) {
     return axios.post(`${PREFIX_URL}/delete-review`,params);
 }
+
+export function getImagePath(fileName) {
+    return `http://localhost:3000/image/${fileName}`;
+}
