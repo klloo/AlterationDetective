@@ -36,6 +36,14 @@ export default {
       return '';
     },
   },
+  watch: {
+    keyword: {
+      immediate: true,
+      handler() {
+        this.$emit('change-keyword', this.keyword);
+      },
+    },
+  },
   methods: {
     /**
      * 키워드로 검색한다.

@@ -15,7 +15,7 @@
           <span class="RECOMMEND favorite-img"></span>
         </el-col>
         <el-col :span="19">
-          <p class="fw_700 tal title">
+          <p class="mb_8 fw_700 tal title">
             {{ shop.alterationShopName }}
           </p>
           <div class="mb_8 d_flex align_center justify_between">

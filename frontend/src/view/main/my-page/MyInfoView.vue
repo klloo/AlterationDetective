@@ -52,6 +52,8 @@ export default {
               if (!isNil(this.formData.password) && !isNil(value)) {
                 if (this.formData.password != value) {
                   callback(new Error('비밀번호가 일치하지 않습니다.'));
+                } else {
+                  callback();
                 }
               } else {
                 callback();

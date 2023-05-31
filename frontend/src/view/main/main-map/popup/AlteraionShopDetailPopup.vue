@@ -12,7 +12,7 @@
         <el-rate :value="starRateFormatter(shopInfo.starRate)" show-score disabled />
         <el-row class="d_flex mt_12">
           <el-col :span="6" class="fw_600">주소</el-col>
-          <el-col :span="18">
+          <el-col :span="18" @click.native="clickAddress">
             <span class="address"> {{ shopInfo.address }}</span>
             <span style="color: gray;">&nbsp;({{ distFormatter(shopInfo.dist) }})</span>
           </el-col>
@@ -160,6 +160,12 @@ export default {
       this.$nextTick(() => {
         this.$refs.writeReview.open(this.alterationShopId, this.shopInfo);
       });
+    },
+    /**
+     * 주소를 클릭한다.
+     */
+    clickAddress() {
+      this.$emit('set-shop-map', this.shopInfo);
     },
   },
 };

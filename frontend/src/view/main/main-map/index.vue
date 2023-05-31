@@ -1,7 +1,7 @@
 <template>
   <div>
     <search-popup ref="searchPopup" @select-addr="setPosition" @select-shop="selectAlterationShop" />
-    <alteraion-shop-detail-popup ref="detailPopup"></alteraion-shop-detail-popup>
+    <alteraion-shop-detail-popup ref="detailPopup" @set-shop-map="setShopMap"></alteraion-shop-detail-popup>
     <div>
       <div class="search_box pa_1">
         <div @click="openSearchPopup">
@@ -14,18 +14,30 @@
         </div>
         <!-- 거리 조정 슬라이더 -->
         <distance-tune v-show="showDistanceTune" @change-value="changeDistance"></distance-tune>
+        <el-button v-if="!isEmpty(alterationShopPos)" @click="alterationShopPos = []">
+          매장 위치
+          <i class="el-icon-refresh-left" />
+        </el-button>
       </div>
       <!-- 지도 -->
       <div class="map_wrap" v-loading="isLoading" element-loading-background="rgba(255, 255, 255, 0.8)">
         <naver-maps :height="height" :width="width" :mapOptions="mapOptions" :initLayers="initLayers" @load="onLoad">
-          <naver-marker :lat="mapLatitude" :lng="mapLongitude" />
+          <naver-marker :lat="mapLatitude" :lng="mapLongitude" ref="marker1">
+            <i class="el-icon-location map-pos-icon" />
+          </naver-marker>
           <naver-marker
-            v-for="(item, index) in altreationShopList"
+            v-for="(item, index) in mapAltreationShopList"
             :key="index"
             :lat="item.latitude"
             :lng="item.longitude"
+            :ref="`marker${index}`"
             @click="selectAlterationShop(item)"
-          ></naver-marker>
+          >
+            <div class="shop-pos-icon">
+              <i class="el-icon-s-shop" />
+              {{ item.alterationShopName }}
+            </div>
+          </naver-marker>
         </naver-maps>
         <el-button class="refresh" @click="refreshAlterationShop" icon="el-icon-refresh-right"> </el-button>
         <el-button class="my-place" @click="setCurrentPosition" icon="el-icon-aim"> </el-button>
@@ -43,12 +55,12 @@
           </el-row>
         </div>
         <div slot="open">
-          <recommend :alteration-shop-list="altreationShopList" @click-shop="selectAlterationShop"></recommend>
+          <recommend :alteration-shop-list="alterationShopList" @click-shop="selectAlterationShop"></recommend>
         </div>
         <div class="mt_8" slot="close">
           <span class="shop_count">
             <span style="font-weight: bold">
-              {{ altreationShopList.length }}
+              {{ alterationShopList.length }}
             </span>
             개의 수선집 목록 보기
           </span>
@@ -59,6 +71,7 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash';
 import axios from 'axios';
 import { getAlterationShopList } from '@/api/alteration-shop';
 import Recommend from './components/Recommend';
@@ -98,7 +111,7 @@ export default {
       },
       initLayers: ['BACKGROUND', 'BACKGROUND_DETAIL', 'POI_KOREAN', 'TRANSIT', 'ENGLISH', 'CHINESE', 'JAPANESE'],
       // 수선집 목록
-      altreationShopList: [],
+      alterationShopList: [],
       // 현재 클릭한 수선집 id
       selectedShopId: -1,
       // 로딩 중 여부
@@ -111,14 +124,21 @@ export default {
       addressString: '',
       // 하단 추천 수선집 open 여부
       openShopList: false,
+      // 지도에 위치를 나타낼 수선집 정보
+      alterationShopPos: [],
     };
   },
   computed: {
     curPos() {
       return this.$store.getters.curPos;
     },
+    mapAltreationShopList() {
+      if (!isEmpty(this.alterationShopPos)) return this.alterationShopPos;
+      return this.alterationShopList;
+    },
   },
   methods: {
+    isEmpty,
     /**
      * 지도가 로드되면 수행
      * map 컴포넌트 할당
@@ -143,7 +163,7 @@ export default {
         .then((data) => {
           const result = data.data;
           if (result.success) {
-            this.altreationShopList = result.data;
+            this.alterationShopList = result.data;
           }
         })
         .catch((err) => {
@@ -306,6 +326,15 @@ export default {
       this.$refs.searchPopup.closePopup();
       this.$refs.detailPopup.closePopup();
     },
+    /**
+     * 파라미터로 전달받은 가게만 지도에 표시한다.
+     */
+    setShopMap(shopInfo) {
+      this.alterationShopPos = [shopInfo];
+      this.map.setCenter(new naver.maps.LatLng(shopInfo.latitude, shopInfo.longitude));
+      this.mapOptions.zoom = 15;
+      this.closePopups();
+    },
   },
 };
 </script>
@@ -405,5 +434,21 @@ export default {
 }
 .shop_count {
   font-size: 15px;
+}
+.map-pos-icon {
+  font-size: 35px;
+  color: rgb(217, 78, 68) !important;
+}
+.shop-pos-icon {
+  display: flex !important;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--maincolor) !important;
+  border: 1px solid var(--maincolor);
+  border-radius: 30px;
+  background: #fff;
+  padding: 4px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>

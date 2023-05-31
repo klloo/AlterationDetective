@@ -1,7 +1,7 @@
 <template>
   <popup ref="popup" @closed="initData">
     <div slot="content">
-      <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" />
+      <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" @change-keyword="changeKeyword" />
       <div class="search-bottom">
         <div v-show="!showResult">
           <div class="tal mt_8">
@@ -91,16 +91,6 @@ export default {
     },
     recentKeywords() {
       return this.$store.getters.recentKeywords;
-    },
-  },
-  watch: {
-    addrList() {
-      this.showResult = !isEmpty(this.keyword);
-      if (this.showResult) this.$refs.bookmarkPlace.initData();
-    },
-    shopList() {
-      this.showResult = !isEmpty(this.keyword);
-      if (this.showResult) this.$refs.bookmarkPlace.initData();
     },
   },
   methods: {
@@ -207,6 +197,13 @@ export default {
      */
     closePopup() {
       this.$refs.popup.close();
+    },
+    /**
+     * 검색 컴포넌트에서 키워드가 바뀔 때 호출되는 함수
+     */
+    changeKeyword(keyword) {
+      this.showResult = !isEmpty(keyword);
+      if (this.showResult) this.$refs.bookmarkPlace.initData();
     },
   },
 };
