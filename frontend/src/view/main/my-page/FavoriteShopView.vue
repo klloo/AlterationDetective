@@ -1,5 +1,5 @@
 <template>
-  <popup ref="popup" title="좋아요한 수선집" titleIcon="el-icon-star-on">
+  <popup ref="popup" :title="`좋아요한 수선집 (${alterationShopList.length})`" titleIcon="el-icon-star-on">
     <div slot="content" class="mr_16 ml_16 mt_16">
       <div class="mt_100" v-if="isEmpty(alterationShopList) && !isLoading">좋아요한 수선집이 없어요 ㅜ_ㅜ</div>
       <el-row

@@ -1,6 +1,6 @@
 <template>
   <popup ref="popup" @closed="initData">
-    <div slot="content">
+    <div slot="content" class="search-wrapper">
       <address-shop-search ref="search" @set-addr="setAddrList" @set-shop="setShopList" @change-keyword="changeKeyword" />
       <div class="search-bottom">
         <div v-show="!showResult">
@@ -38,7 +38,7 @@
               <div v-show="isEmpty(shopList)" class="mt_32 d_flex justify_center">
                 검색 결과가 없습니다.
               </div>
-              <ul class="mt_8 tal scrollable">
+              <ul class="mt_8 tal scrollable w100">
                 <li class="mb_8" v-for="(shop, index) in shopList" :key="index" @click="selectShop(shop)">
                   <el-row>
                     <!-- 가게 이름 -->

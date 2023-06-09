@@ -40,7 +40,7 @@
           </el-col>
         </el-row>
         <el-row class="mt_16 ml_4">
-          <img v-if="!isEmpty(review.image)" :src="review.image" class="review-img" />
+          <img v-if="!isEmpty(review.imageFileName)" :src="getImagePath(review.imageFileName)" class="review-img" />
           <p class="tal mb_32">{{ review.content }}</p>
         </el-row>
       </div>
@@ -63,7 +63,7 @@
 <script>
 import { isEmpty } from 'lodash';
 import { dateFormatter } from '@/utils/formatter';
-import { deleteReview } from '@/api/review';
+import { deleteReview, getImagePath } from '@/api/review';
 
 export default {
   name: 'ReviewList',
@@ -87,6 +87,7 @@ export default {
   methods: {
     isEmpty,
     dateFormatter,
+    getImagePath,
     /**
      * 리뷰를 삭제한다.
      */

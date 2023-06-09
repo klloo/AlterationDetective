@@ -39,7 +39,7 @@
             </div>
           </naver-marker>
         </naver-maps>
-        <el-button class="refresh" @click="refreshAlterationShop" icon="el-icon-refresh-right"> </el-button>
+        <!-- <el-button class="refresh" @click="refreshAlterationShop" icon="el-icon-refresh-right"> </el-button> -->
         <el-button class="my-place" @click="setCurrentPosition" icon="el-icon-aim"> </el-button>
       </div>
       <!-- 수선집 목록 -->
@@ -313,11 +313,11 @@ export default {
      * 현위치에서 수선집 목록을 새로고침한다.
      */
     refreshAlterationShop() {
-      const point = this.map.getCenter();
-      const latlng = naver.maps.TransCoord.fromTM128ToLatLng(point);
-      this.mapLatitude = latlng.y;
-      this.mapLongitude = latlng.x;
-      this.loadAlterationShopList();
+      // const point = this.map.getCenter();
+      // const latlng = naver.maps.TransCoord.fromTM128ToLatLng(point);
+      // this.mapLatitude = latlng.y;
+      // this.mapLongitude = latlng.x;
+      // this.loadAlterationShopList();
     },
     /**
      * 모든 팝업을 닫는다.

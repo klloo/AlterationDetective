@@ -53,6 +53,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(require('connect-history-api-fallback')());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/image', express.static(path.join(__dirname, 'public/image')))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
