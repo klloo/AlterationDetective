@@ -3,7 +3,7 @@
     <div v-show="isEmpty(addrList)" class="mt_32 d_flex justify_center">
       검색 결과가 없습니다.
     </div>
-    <ul class="mt_8 tal scrollable">
+    <ul class="mt_8 tal scrollable w100">
       <li v-for="(addr, index) in addrList" :key="index" @click="selectAddr(addr.roadAddr)">
         <el-row>
           <!-- 도로명 주소 -->

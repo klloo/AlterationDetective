@@ -6,7 +6,7 @@
         <span class="LOGIN_IMG mx_0a"></span>
       </el-row>
       <!-- 로그인 input -->
-      <el-row class="input_box mt_64 mb_16 mr_32 ml_32">
+      <el-row class="input_box mt_64 mb_24 mr_32 ml_32">
         <el-input
           prefix-icon="el-icon-message"
           class="login_input mb_12"
@@ -18,7 +18,7 @@
         <el-input prefix-icon="el-icon-key" @keyup.enter="login" type="password" placeholder="비밀번호를 입력하세요." v-model="password" />
       </el-row>
       <!-- 자동로그인 -->
-      <el-checkbox class="checkbox ml_32 mb_24"> 자동 로그인 </el-checkbox>
+      <!-- <el-checkbox class="checkbox ml_32 mb_24"> 자동 로그인 </el-checkbox> -->
       <!-- 로그인 버튼 -->
       <div class="mb_32 mr_32 ml_32">
         <button @click="login" class="button_w100 blue color_w">로그인</button>
